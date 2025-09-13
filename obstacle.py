@@ -60,7 +60,7 @@ class Cone(Obstacle):
 
     def __init__(self, x=0, y=0):
         super().__init__(x, y)
-        self.hitbox_padding = (2, 2, 13, -2)
+        self.hitbox_padding = (2, 2, 13, -4)
     
     def load_image(self):
         return res.Image.CONE.value

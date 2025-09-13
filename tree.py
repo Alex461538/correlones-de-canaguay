@@ -9,11 +9,26 @@ class Node:
     def __init__(self, value):
         self.value = value
 
-    def get_next_ref_non_terminal(self):
+    """     def get_next_ref_non_terminal(self):
         node = self.right
         while node != None and node.left != None:
             node = node.left
-        return node
+        return node """
+    
+    def next(self):
+        node = self
+        # si hay arbol derecho le entra
+        if node.right:
+            # entra al arbol derecho
+            node = node.right
+            # Obtiene el nodo más a la izquierda
+            while node != None and node.left != None:
+                node = node.left
+            return node
+        # Si no hay nodos derechos
+        while node.parent and node == node.parent.right:
+            node = node.parent
+        return node.parent
     
     def detach_from_parent(self):
         if (self.parent == None):
@@ -42,7 +57,7 @@ class Tree:
                 node.detach_from_parent()
         # pass the headache to someone else
         elif node.has_full_capacity():
-            ino = node.get_next_ref_non_terminal()
+            ino = node.next()
             node.value = ino.value
             self.__del_loc(ino)
         # It has one child
@@ -162,19 +177,65 @@ class Tree:
         if (self.root):
             _add(self.root)
         return arr
+    
+    def begin(self):
+        node = self.root
+        while node.left:
+            node = node.left
+        return node
+    
+    def search_lax(self, item, cmp_func = None):
+        node = self.root
+        if cmp_func == None:
+            while node != None:
+                if item == node.value:
+                    break
+                elif item < node.value and node.left != None:
+                    node = node.left
+                elif item > node.value and node.right != None:
+                    node = node.right
+                else:
+                    break
+        else:
+            while node != None:
+                if cmp_func(node.value) == 0:
+                    break
+                elif cmp_func(node.value) < 0 and node.left != None:
+                    node = node.left
+                elif cmp_func(node.value) > 0 and node.right != None:
+                    node = node.right
+                else:
+                    break
+            """ if item == node.value:
+                break
+            elif item < node.value:
+                if node.left != None:
+                    node = node.left
+                else:
+                    break
+            else:
+                if node.right != None:
+                    node = node.right
+                else:
+                    break """
+        return node
+    
+    def get_in_range(self, low, high, cmp_func = None):
+        return (self.search_lax(low, cmp_func), self.search_lax(high, cmp_func))
+
 """ 
-tree = Tree()
+D = Tree()
 
-tree.add(2,1,4,3,5)
+D.add(2,1,4,3,5)
 
-print("ILR: ", tree.ILR_list())
-print("LIR: ", tree.LIR_list())
-print("LRI: ", tree.LRI_list())
+print("ILR: ", D.ILR_list())
+print("LIR: ", D.LIR_list())
+print("LRI: ", D.LRI_list())
 
-print(34, tree.contains(34))
+print(34, D.contains(34))
 
-for i in tree.LRI_list():
-    print("Deleting ", i,":", tree.LIR_list())
-    tree.delete(i)
+K = D.begin()
 
-print("R : ", tree.LIR_list()) """
+while K:
+    print(K.value)
+    K = K.next() """

@@ -32,7 +32,7 @@ tree = tree.Tree()
 road: Road = None
 player: Player = None
 
-rendering_queue = []
+rendering_obstacle_list = []
 
 screen_width = 0
 screen_height = 0
@@ -107,8 +107,32 @@ def event_update(event: pygame.event.Event):
             if event.button == 1:
                 goto_edit()
 
+def load_visible_obstacles():
+    def compare(x, y):
+        if x == y:
+            return 0
+        elif x > y:
+            return 1
+        return -1
+    
+    global rendering_obstacle_list
+
+    rendering_obstacle_list = []
+    low_limit = tree.search_lax(None, lambda obj: compare(0, obj.obstacle.rect.right - road.offset))
+    high_limit = tree.search_lax(None, lambda obj: compare(screen_width, obj.obstacle.rect.x - road.offset))
+
+    # print(low_limit.value, high_limit.value)
+    while low_limit != None:
+        rendering_obstacle_list.append(low_limit.value)
+        if low_limit.value == high_limit.value or low_limit.value > high_limit.value:
+            break
+        low_limit = low_limit.next()
+
 def pre_update():
     global edit_scroll_velocity
+
+    load_visible_obstacles()
+
     keys = pygame.key.get_pressed()
     if game_state == State.EDITING:
         sub_vel = 0
@@ -120,7 +144,7 @@ def pre_update():
         road.offset += edit_scroll_velocity
 
 def update():
-    global dialog_timer, rendering_queue
+    global dialog_timer, rendering_obstacle_list
     #if len(rendering_queue) > 0 and rendering_queue[0].rect.right - road.offset < 0:
     #    print(f"Removed left: { rendering_queue.pop(0).as_point() }")
     road.update()
@@ -132,7 +156,7 @@ def update():
             goto_to_the_graveyard()
         else:
             if not player.jumping:
-                for object in rendering_queue:
+                for object in rendering_obstacle_list:
                     object_rect = object.obstacle.rect
                     padding = object.obstacle.hitbox_padding
                     rect = pygame.Rect(object_rect.x - road.offset + padding[0], object_rect.y + padding[2], object_rect.w - padding[0] - padding[1], object_rect.h - padding[2] - padding[3])
@@ -153,18 +177,16 @@ def point_inside_rect(x, y, rect):
     return x >= rect.x and x <= rect.right and y >= rect.y and y <= rect.bottom
 
 def draw(screen: pygame.Surface):
-    global focused_obj, rendering_queue
+    global focused_obj, rendering_obstacle_list
     screen.blit(res.Image.BG.value, (0,24))
     road.draw(screen)
-
-    rendering_queue = tree.LIR_list()
 
     if game_state == State.EDITING and focused_obj is None:
         screen.blit(obstacle_texture_from_index(placeholder_texture_index), pygame.mouse.get_pos())
 
     focused_obj = None
 
-    for object in rendering_queue:
+    for object in rendering_obstacle_list:
         rect = pygame.Rect(object.obstacle.rect.x - road.offset, object.obstacle.rect.y, object.obstacle.rect.w, object.obstacle.rect.h)
         if game_state == State.EDITING and point_inside_rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], rect):
             focused_obj = object
