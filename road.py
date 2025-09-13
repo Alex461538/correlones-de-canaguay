@@ -1,6 +1,7 @@
 import pygame
 
 class Road(pygame.sprite.Sprite):
+    """ An infinitely large road with a finnish line """
     def __init__(self, screen_width = 0, length = 5):
        pygame.sprite.Sprite.__init__(self)
        self.image = pygame.image.load("img/calle.png").convert_alpha()
@@ -12,10 +13,12 @@ class Road(pygame.sprite.Sprite):
        self.completeness = 0
     
     def update(self, *args, **kwargs):
+        """ Update road's main logic """
         self.completeness = round(min(1, max(0, self.offset / self.length / self.rect.w)) * 100)
         return super().update(*args, **kwargs)
     
     def get_size(self):
+        """ Get the road length in pixels """
         return self.length * self.rect.w
     
     def draw(self, screen):

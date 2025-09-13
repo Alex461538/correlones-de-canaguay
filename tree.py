@@ -8,12 +8,6 @@ class Node:
 
     def __init__(self, value):
         self.value = value
-
-    """     def get_next_ref_non_terminal(self):
-        node = self.right
-        while node != None and node.left != None:
-            node = node.left
-        return node """
     
     def next(self):
         node = self
@@ -185,6 +179,7 @@ class Tree:
         return node
     
     def search_lax(self, item, cmp_func = None):
+        """ Search but return allways """
         node = self.root
         if cmp_func == None:
             while node != None:
@@ -206,36 +201,7 @@ class Tree:
                     node = node.right
                 else:
                     break
-            """ if item == node.value:
-                break
-            elif item < node.value:
-                if node.left != None:
-                    node = node.left
-                else:
-                    break
-            else:
-                if node.right != None:
-                    node = node.right
-                else:
-                    break """
         return node
     
     def get_in_range(self, low, high, cmp_func = None):
         return (self.search_lax(low, cmp_func), self.search_lax(high, cmp_func))
-
-""" 
-D = Tree()
-
-D.add(2,1,4,3,5)
-
-print("ILR: ", D.ILR_list())
-print("LIR: ", D.LIR_list())
-print("LRI: ", D.LRI_list())
-
-print(34, D.contains(34))
-
-K = D.begin()
-
-while K:
-    print(K.value)
-    K = K.next() """

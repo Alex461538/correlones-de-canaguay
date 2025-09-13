@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
        self.damaged_timer = 0
     
     def update(self, *args, **kwargs):
+        """ Update player's main logic """
         if self.damaged_timer > 0:
             self.damaged_timer -= 1
         if self.jumping:
@@ -40,21 +41,26 @@ class Player(pygame.sprite.Sprite):
         return super().update(*args, **kwargs)
 
     def lane_up(self):
+        """ Trigger move up """
         self.lane -= 1
     
     def lane_down(self):
+        """ Trigger move down """
         self.lane += 1
     
     def jump(self):
+        """ Trigger jump """
         self.jumping = True
     
     def damage(self, damage: int = 0):
+        """ Damages the player by a given amount if it hasn't the knockback effect """
         if self.damaged_timer == 0:
             self.HP = max(self.HP - damage, 0)
             self.damaged_timer = 30
     
     def draw(self, screen):
-        swing_y = 3 * math.sin(time.time() * 3)
+        """ Draw the player """
+        swing_y = 2 * math.sin(time.time() * 3)
         # Calcula la altura del salto basandose en el seno de jump_timer restringido en [ 0, pi ]
         jump_y = self.rect.h * math.sin( math.pi * float(self.jump_timer) / self.jump_distance )
         # Calcula el angulo del jugador basandose en el seno de jump_timer restringido en [ 0, 2 * pi ] subida y bajada

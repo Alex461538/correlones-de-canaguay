@@ -9,9 +9,10 @@ from road import Road
 from player import Player
 
 from point import Point
-from obstacle import obstacle_from_index, obstacle_texture_from_index, obstacle_variants, obstacle_damage
+from obstacle import obstacle_from_index, obstacle_texture_from_index, get_obstacle_types_count, obstacle_damage_from_index
 
 class State(Enum):
+    """ Describes the current state of the game """
     EDITING = 0
     PLAYING = 1
     WINNER = 2
@@ -20,49 +21,57 @@ class State(Enum):
 game_state: State = State.EDITING
 
 edit_scroll_velocity: float = 0
-focused_obj: Point = None
 placeholder_texture_index: int = 0
-
 player_sprite = ""
 player_velocity: float = 5
 framerate: int = 30
+screen_width = 0
+screen_height = 0
+dialog_timer = 0
 
 tree = tree.Tree()
 
+focused_obj: Point = None
 road: Road = None
 player: Player = None
 
 rendering_obstacle_list = []
 
-screen_width = 0
-screen_height = 0
-dialog_timer = 0
-
 def goto_edit():
+    """ Change game to edit mode """
     global game_state, dialog_timer
+    # --- Global decl end ---
     road.offset = 0
     dialog_timer = 0
     game_state = State.EDITING
 
 def goto_play():
+    """ Change game to play mode """
     global game_state, dialog_timer
+    # --- Global decl end ---
     player.HP = player.max_HP
     road.offset = -100
     dialog_timer = 0
     game_state = State.PLAYING
 
 def goto_win():
+    """ Change game to win screen """
     global game_state, dialog_timer
+    # --- Global decl end ---
     dialog_timer = 0
     game_state = State.WINNER
 
 def goto_to_the_graveyard():
+    """ Change game to death screen """
     global game_state, dialog_timer
+    # --- Global decl end ---
     dialog_timer = 0
     game_state = State.GAMEOVER
 
 def init(SCREEN_WIDTH: int, SCREEN_HEIGHT: int):
+    """ Initialize the game's general variables """
     global road, player, screen_width, screen_height
+    # --- Global decl end ---
     road = Road(screen_width=SCREEN_WIDTH, length=5)
     player = Player(road=road)
     road.rect.y = (SCREEN_HEIGHT - road.rect.h) / 2
@@ -71,11 +80,13 @@ def init(SCREEN_WIDTH: int, SCREEN_HEIGHT: int):
     load_json()
 
 def event_update(event: pygame.event.Event):
+    """ Updates the game's logic for pygame events """
     global placeholder_texture_index
+    # --- Global decl end ---
     if game_state == State.EDITING:
         if event.type == pygame.MOUSEWHEEL:
             placeholder_texture_index += 1
-            placeholder_texture_index %= obstacle_variants
+            placeholder_texture_index %= get_obstacle_types_count()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_e:
                 goto_play()
@@ -87,7 +98,7 @@ def event_update(event: pygame.event.Event):
                 tree.add(obj.as_point())
             elif event.button == 2:
                 placeholder_texture_index += 1
-                placeholder_texture_index %= obstacle_variants
+                placeholder_texture_index %= get_obstacle_types_count()
             elif event.button == 3:
                 if focused_obj:
                     tree.delete(focused_obj)
@@ -108,6 +119,7 @@ def event_update(event: pygame.event.Event):
                 goto_edit()
 
 def load_visible_obstacles():
+    """ Loads the visible obstacles into the rendering list """
     def compare(x, y):
         if x == y:
             return 0
@@ -116,6 +128,7 @@ def load_visible_obstacles():
         return -1
     
     global rendering_obstacle_list
+    # --- Global decl end ---
 
     rendering_obstacle_list = []
     low_limit = tree.search_lax(None, lambda obj: compare(0, obj.obstacle.rect.right - road.offset))
@@ -128,9 +141,10 @@ def load_visible_obstacles():
             break
         low_limit = low_limit.next()
 
-def pre_update():
-    global edit_scroll_velocity
-
+def update():
+    """ Updates the main game's logic """
+    global rendering_obstacle_list, edit_scroll_velocity
+    # --- Global decl end ---
     load_visible_obstacles()
 
     keys = pygame.key.get_pressed()
@@ -142,11 +156,6 @@ def pre_update():
             sub_vel = 3
         edit_scroll_velocity = (edit_scroll_velocity + player_velocity * sub_vel) / 2
         road.offset += edit_scroll_velocity
-
-def update():
-    global dialog_timer, rendering_obstacle_list
-    #if len(rendering_queue) > 0 and rendering_queue[0].rect.right - road.offset < 0:
-    #    print(f"Removed left: { rendering_queue.pop(0).as_point() }")
     road.update()
     player.update()
     if game_state == State.PLAYING:
@@ -161,28 +170,30 @@ def update():
                     padding = object.obstacle.hitbox_padding
                     rect = pygame.Rect(object_rect.x - road.offset + padding[0], object_rect.y + padding[2], object_rect.w - padding[0] - padding[1], object_rect.h - padding[2] - padding[3])
                     if point_inside_rect(player.rect.centerx, player.rect.bottom - 4, rect):
-                        player.damage(obstacle_damage[object.obstacle.type])
-        
-    elif game_state == State.WINNER or game_state == State.GAMEOVER:
-        dialog_timer += 1
-    pass
+                        player.damage(obstacle_damage_from_index(object.obstacle.type))
 
 def post_update():
+    """ Update the game's logic for the frme end """
+    global dialog_timer
+    # --- Global decl end ---
     if game_state == State.PLAYING:
         road.offset += player_velocity
-    elif game_state == State.EDITING:
-        pass
+    elif game_state == State.WINNER or game_state == State.GAMEOVER:
+        dialog_timer += 2
 
 def point_inside_rect(x, y, rect):
+    """ Checks if a point (x, y) is inside a pygame rect """
     return x >= rect.x and x <= rect.right and y >= rect.y and y <= rect.bottom
 
-def draw(screen: pygame.Surface):
+def draw(surface: pygame.Surface):
+    """ Draws the game content to a surface """
     global focused_obj, rendering_obstacle_list
-    screen.blit(res.Image.BG.value, (0,24))
-    road.draw(screen)
+    # --- Global decl end ---
+    surface.blit(res.Image.BG.value, (0,24))
+    road.draw(surface)
 
     if game_state == State.EDITING and focused_obj is None:
-        screen.blit(obstacle_texture_from_index(placeholder_texture_index), pygame.mouse.get_pos())
+        surface.blit(obstacle_texture_from_index(placeholder_texture_index), pygame.mouse.get_pos())
 
     focused_obj = None
 
@@ -190,26 +201,25 @@ def draw(screen: pygame.Surface):
         rect = pygame.Rect(object.obstacle.rect.x - road.offset, object.obstacle.rect.y, object.obstacle.rect.w, object.obstacle.rect.h)
         if game_state == State.EDITING and point_inside_rect(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1], rect):
             focused_obj = object
-            pygame.draw.rect(screen, "white", rect)
-        screen.blit(object.obstacle.image, rect)
+            pygame.draw.rect(surface, "white", rect)
+        surface.blit(object.obstacle.image, rect)
     
-    player.draw(screen)
+    player.draw(surface)
     road_below_y = 0
-    screen.blit(res.Font.NJ.value.render(f"HP {player.HP} <{road.completeness}x>", False, (143, 98, 51)), (2, road_below_y))
-
-    # print(pygame.mouse.get_pos())
+    surface.blit(res.Font.NJ.value.render(f"HP {player.HP} <{road.completeness}x>", False, (143, 98, 51)), (2, road_below_y))
     dialog_aperture = min(24, dialog_timer)
-    pygame.draw.rect(screen, (56, 0, 15), (0, screen_height / 2 - dialog_aperture, screen_width, dialog_aperture * 2))
+    pygame.draw.rect(surface, (56, 0, 15), (0, screen_height / 2 - dialog_aperture, screen_width, dialog_aperture * 2))
     if dialog_aperture == 24:
         if game_state == State.WINNER:
-            screen.blit(res.Image.WIN.value, (0, screen_height / 2 - 12))
+            surface.blit(res.Image.WIN.value, (0, screen_height / 2 - 12))
         elif game_state == State.GAMEOVER:
-            screen.blit(res.Image.LOSE.value, (0, screen_height / 2 - 12))
-    pass
+            surface.blit(res.Image.LOSE.value, (0, screen_height / 2 - 12))
 
 def load_json():
+    """ Load configurable data from disk """
     # load atomic properties
-    global player_velocity, framerate, tree, player_sprite
+    global player_velocity, framerate, tree, player_sprite, player, tree, obstacle_damage
+    # --- Global decl end ---
     with open('data.json', 'r') as file:
         loaded_data = json.load(file)
         road.length = loaded_data["config"]["road_length"]
@@ -226,7 +236,9 @@ def load_json():
         pass
 
 def save_json():
-    global player_velocity, framerate, tree, player_sprite, player, tree
+    """ Save configurable data to disk """
+    global player_velocity, framerate, tree, player_sprite, player, tree, obstacle_damage
+    # --- Global decl end ---
     with open('data.json', 'w') as file:
         json.dump({
             "config": {

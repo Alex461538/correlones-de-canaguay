@@ -2,9 +2,11 @@ import pygame
 from enum import Enum
 
 class Font(Enum):
+    """ Preloaded fonts """
     NJ = pygame.font.Font("font/credits-small.ttf", 12)
 
 class Image(Enum):
+    """ Preloaded textures """
     HOLE = pygame.image.load("img/hueco.png").convert_alpha()
     CONE = pygame.image.load("img/cono.png").convert_alpha()
     BG = pygame.image.load("img/bg.png")

@@ -36,7 +36,6 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill((56, 0, 15))
-    game.pre_update()
     # update the game logic
     game.update()
     # draw the game to the screen

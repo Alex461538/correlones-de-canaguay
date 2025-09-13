@@ -3,17 +3,28 @@ from point import Point
 import pygame
 import res
 
-obstacle_damage = [5, 20]
-obstacle_variants = 0
+class ObstacleEntry:
+    """ Offers globally accesible info for each type of obstacle """
+    def __init__(self, damage, name, constructor, image):
+        self.damage = damage
+        self.name = name
+        self.constructor = constructor
+        self.image = image
 
-def new_variant(damage = 0):
-    global obstacle_variants
-    obstacle_damage[obstacle_variants] = damage
-    obstacle_variants += 1
-    return obstacle_variants - 1
+obstacle_registry: dict[int, ObstacleEntry] = {}
 
 class Obstacle(pygame.sprite.Sprite):
+    """ Base class for an obstacle """
     type = -1
+
+    def __init_subclass__(cls, **kwargs):
+        """
+        Runs automatically whenever a subclass of Obstacle is defined
+        Registers each subclass's global info
+        """
+        super().__init_subclass__()
+        cls.type = len(obstacle_registry)
+        obstacle_registry[cls.type] = ObstacleEntry(damage=kwargs["damage"], name=__name__, constructor=cls, image=cls().load_image())
     
     def __init__(self, x = 0, y = 0):
         pygame.sprite.Sprite.__init__(self)
@@ -30,11 +41,6 @@ class Obstacle(pygame.sprite.Sprite):
         **Subclasses must return a pygame.Surface.**
         """
         pass
-
-    @abstractmethod
-    def set_damage(self, damage = 0):
-        """Subclasses must return a pygame.Surface."""
-        pass
     
     def as_point(self):
         """
@@ -43,37 +49,44 @@ class Obstacle(pygame.sprite.Sprite):
         """
         return Point(self.rect.x, self.rect.y, self)
 
-class Hole(Obstacle):
-    type = new_variant(damage=20)
-
+class Hole(Obstacle, damage=20):
+    """ A hole in the road """
     def __init__(self, x=0, y=0):
         super().__init__(x, y)
     
     def load_image(self):
         return res.Image.HOLE.value
 
-    def set_damage(self, damage = 20):
-        obstacle_damage[self.type] = damage
-
-class Cone(Obstacle):
-    type = new_variant(damage=10)
-
+class Cone(Obstacle, damage=10):
+    """ An orange cone """
     def __init__(self, x=0, y=0):
         super().__init__(x, y)
-        self.hitbox_padding = (2, 2, 13, -4)
+        self.hitbox_padding = (2, 2, 8, -4)
     
     def load_image(self):
         return res.Image.CONE.value
 
-    def set_damage(self, damage = 5):
-        obstacle_damage[self.type] = damage
+def obstacle_damage_from_index(i):
+    """ Returns the damage of an obstacle given it's type """
+    tex = obstacle_registry[i]
+    if (tex):
+        return tex.damage
+    return 0
 
 def obstacle_texture_from_index(i):
-    if i == 1:
-        return res.Image.CONE.value
+    """ Returns the texture of an obstacle given it's type """
+    tex = obstacle_registry[i]
+    if (tex):
+        return tex.image
     return res.Image.HOLE.value
 
 def obstacle_from_index(i: int, x: int = 0, y: int = 0):
-    if i == 1:
-        return Cone(x, y)
+    """ Returns an instance of an obstacle given it's type """
+    tex = obstacle_registry[i]
+    if (tex):
+        return tex.constructor(x, y)
     return Hole(x, y)
+
+def get_obstacle_types_count():
+    """ Get the obstacle variants count """
+    return len(obstacle_registry)
