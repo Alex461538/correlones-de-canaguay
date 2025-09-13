@@ -1,13 +1,14 @@
 {
     "config": {
-        "road_length": 2000,
+        "road_length": 50,
         "player_velocity": 5,
         "framerate": 30,
         "jump_distance": 24,
-        "player_sprite": "player.png"
+        "player_sprite": "img/player.png"
     },
     "objects": [
-        {"x": 64, "y": 0, "type": "cono"},
-        {"x": 64, "y": 64, "type": "hueco"}
+        {"x": 94, "y": 76, "type": 1},
+        {"x": 64, "y": 128, "type": 0},
+        {"x": 64, "y": 76, "type": 1}
     ]
 }

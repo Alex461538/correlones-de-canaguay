@@ -36,10 +36,10 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = (self.rect.y + self.y) // 2
         return super().update(*args, **kwargs)
 
-    def up(self):
+    def lane_up(self):
         self.lane -= 1
     
-    def down(self):
+    def lane_down(self):
         self.lane += 1
     
     def jump(self):

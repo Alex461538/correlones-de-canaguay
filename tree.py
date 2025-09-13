@@ -124,6 +124,9 @@ class Tree:
     def contains(self, item):
         return item in self
     
+    def clear(self):
+        self.root = None
+    
     def LIR_list(self):
         arr = []
         def _add(node: Node):

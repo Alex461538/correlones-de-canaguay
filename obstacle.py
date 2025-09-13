@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from point import Point
 import pygame
+import res
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, x = 0, y = 0):
@@ -22,13 +23,6 @@ class Obstacle(pygame.sprite.Sprite):
     def set_damage(self, damage = None):
         """Subclasses must return a pygame.Surface."""
         pass
-
-        # Create an image of the block, and fill it with a color.
-        # This could also be an image loaded from the disk.
-        self.image = pygame.image.load("img/cono.png").convert_alpha()
-        # Fetch the rectangle object that has the dimensions of the image
-        # Update the position of this object by setting the values of rect.x and rect.y
-        self.rect = self.image.get_rect()
     
     def as_point(self):
         """
@@ -36,3 +30,35 @@ class Obstacle(pygame.sprite.Sprite):
         Lookup has to be easy, but comparison operators can't be overloaded without making this unhashable
         """
         return Point(self.rect.x, self.rect.y, self)
+
+class Hole(Obstacle):
+    def __init__(self, x=0, y=0):
+        super().__init__(x, y)
+    
+    def load_image(self):
+        return res.Image.HOLE.value
+
+    def set_damage(self, damage = None):
+        return 20
+
+class Cone(Obstacle):
+    def __init__(self, x=0, y=0):
+        super().__init__(x, y)
+    
+    def load_image(self):
+        return res.Image.CONE.value
+
+    def set_damage(self, damage = None):
+        return 5
+
+obstacle_variants = 2
+
+def obstacle_texture_from_index(i):
+    if i == 1:
+        return res.Image.CONE.value
+    return res.Image.HOLE.value
+
+def obstacle_from_index(i: int, x: int = 0, y: int = 0):
+    if i == 1:
+        return Cone(x, y)
+    return Hole(x, y)
