@@ -48,4 +48,6 @@ while running:
     # limits FPS to framerate
     clock.tick(game.framerate)
 
+game.save_json()
+
 pygame.quit()

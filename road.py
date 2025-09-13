@@ -15,6 +15,9 @@ class Road(pygame.sprite.Sprite):
         self.completeness = round(min(1, max(0, self.offset / self.length / self.rect.w)) * 100)
         return super().update(*args, **kwargs)
     
+    def get_size(self):
+        return self.length * self.rect.w
+    
     def draw(self, screen):
         """
         Draws the road to a pygame screen
@@ -28,3 +31,4 @@ class Road(pygame.sprite.Sprite):
             x = int(-self.offset) % int(self.rect.w) + i * int(self.rect.w)
             screen.blit(self.image, (x, self.rect.y))
         screen.blit(self.goal_image, (-self.offset + self.length * self.rect.w, self.rect.y))
+        screen.blit(self.goal_image, (-self.offset, self.rect.y))

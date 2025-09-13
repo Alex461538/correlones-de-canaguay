@@ -21,8 +21,11 @@ class Player(pygame.sprite.Sprite):
        self.jumping = False
        self.HP = 100
        self.max_HP = 100
+       self.damaged_timer = 0
     
     def update(self, *args, **kwargs):
+        if self.damaged_timer > 0:
+            self.damaged_timer -= 1
         if self.jumping:
             self.jump_timer += 1
             if self.jump_timer > self.jump_distance:
@@ -45,6 +48,11 @@ class Player(pygame.sprite.Sprite):
     def jump(self):
         self.jumping = True
     
+    def damage(self, damage: int = 0):
+        if self.damaged_timer == 0:
+            self.HP = max(self.HP - damage, 0)
+            self.damaged_timer = 30
+    
     def draw(self, screen):
         swing_y = 3 * math.sin(time.time() * 3)
         # Calcula la altura del salto basandose en el seno de jump_timer restringido en [ 0, pi ]
@@ -60,4 +68,5 @@ class Player(pygame.sprite.Sprite):
         else:
             rot_image = self.image
         pygame.draw.ellipse(screen, (92, 19, 19), (self.rect.x + 2, self.y + self.rect.h - 3 + swing_y, self.rect.w-4, 4))
-        screen.blit(rot_image, (rot_rect.x, round(rot_rect.y - jump_y + swing_y), rot_rect.w, rot_rect.h))
+        if self.damaged_timer % 2 == 0:
+            screen.blit(rot_image, (rot_rect.x, round(rot_rect.y - jump_y + swing_y), rot_rect.w, rot_rect.h))

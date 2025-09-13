@@ -3,12 +3,24 @@ from point import Point
 import pygame
 import res
 
+obstacle_damage = [5, 20]
+obstacle_variants = 0
+
+def new_variant(damage = 0):
+    global obstacle_variants
+    obstacle_damage[obstacle_variants] = damage
+    obstacle_variants += 1
+    return obstacle_variants - 1
+
 class Obstacle(pygame.sprite.Sprite):
+    type = -1
+    
     def __init__(self, x = 0, y = 0):
         pygame.sprite.Sprite.__init__(self)
         self.image = self.load_image()
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.hitbox_padding = (0, 0, 0, 0)
     
     @abstractmethod
     def load_image(self):
@@ -20,7 +32,7 @@ class Obstacle(pygame.sprite.Sprite):
         pass
 
     @abstractmethod
-    def set_damage(self, damage = None):
+    def set_damage(self, damage = 0):
         """Subclasses must return a pygame.Surface."""
         pass
     
@@ -32,26 +44,29 @@ class Obstacle(pygame.sprite.Sprite):
         return Point(self.rect.x, self.rect.y, self)
 
 class Hole(Obstacle):
+    type = new_variant(damage=20)
+
     def __init__(self, x=0, y=0):
         super().__init__(x, y)
     
     def load_image(self):
         return res.Image.HOLE.value
 
-    def set_damage(self, damage = None):
-        return 20
+    def set_damage(self, damage = 20):
+        obstacle_damage[self.type] = damage
 
 class Cone(Obstacle):
+    type = new_variant(damage=10)
+
     def __init__(self, x=0, y=0):
         super().__init__(x, y)
+        self.hitbox_padding = (2, 2, 13, -2)
     
     def load_image(self):
         return res.Image.CONE.value
 
-    def set_damage(self, damage = None):
-        return 5
-
-obstacle_variants = 2
+    def set_damage(self, damage = 5):
+        obstacle_damage[self.type] = damage
 
 def obstacle_texture_from_index(i):
     if i == 1:
