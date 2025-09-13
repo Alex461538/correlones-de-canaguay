@@ -1,9 +1,10 @@
 {
     "config": {
-        "distance": 2000,
-        "velocity": 10,
+        "road_length": 2000,
+        "player_velocity": 5,
         "framerate": 30,
-        "jump_force": 50
+        "jump_distance": 24,
+        "player_sprite": "player.png"
     },
     "objects": [
         {"x": 64, "y": 0, "type": "cono"},

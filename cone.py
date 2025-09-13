@@ -1,11 +1,12 @@
 import pygame
+from obstacle import Obstacle
 
-class Cone(pygame.sprite.Sprite):
-    def __init__(self):
-       pygame.sprite.Sprite.__init__(self)
-       # Create an image of the block, and fill it with a color.
-       # This could also be an image loaded from the disk.
-       self.image = pygame.image.load("img/cono.png").convert_alpha()
-       # Fetch the rectangle object that has the dimensions of the image
-       # Update the position of this object by setting the values of rect.x and rect.y
-       self.rect = self.image.get_rect()
+class Cone(Obstacle):
+    def __init__(self, x=0, y=0):
+        super().__init__(x, y)
+    
+    def load_image(self):
+        return pygame.image.load("img/cono.png").convert_alpha()
+
+    def set_damage(self, damage = None):
+        return 5
