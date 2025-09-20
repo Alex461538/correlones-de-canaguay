@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from typing import Optional, Any
 
 class Node:
@@ -6,6 +7,7 @@ class Node:
     left: Optional["Node"] = None
     right: Optional["Node"] = None
     value: Any = 0
+    height: int = 1
 
     def __init__(self, value):
         """ Node constructor """
@@ -60,6 +62,19 @@ class Node:
     def has_full_capacity(self):
         """ Returns True if has both childs """
         return self.left != None and self.right != None
+    
+    def update_height(self):
+        left_h = self.left.height if self.left else 0
+        right_h = self.right.height if self.right else 0
+        self.height = 1 + max(left_h, right_h)
+
+    def balance_factor(self):
+        left_h = self.left.height if self.left else 0
+        right_h = self.right.height if self.right else 0
+        return left_h - right_h
+    
+    def __str__(self):
+        return f"{self.value}[{self.balance_factor()}]"
 
 class Tree:
     """ Binary Search Tree """
@@ -105,6 +120,96 @@ class Tree:
             return target[0]
         return None
     
+    def rotate_left(self, node: Node):
+        """ Rotates the node to the left and returns the new root of the subtree """
+        if node == None or node.right == None:
+            return None
+        
+        X = node
+        Y = X.right
+        B = Y.left
+        
+        # Exchange parents
+        Y.parent = X.parent
+        if X.parent:
+            if X == X.parent.left:
+                X.parent.left = Y
+            else:
+                X.parent.right = Y
+
+        # Rotate upper
+        Y.left = X
+        X.parent = Y
+
+        # Exchange child
+        X.right = B
+        if B:
+            B.parent = X
+        
+        # Update heights
+        X.update_height()
+        Y.update_height()
+        # Ensure root has no parent
+        if X == self.root:
+            self.root = Y
+        return Y
+    
+    def rotate_right(self, node: Node):
+        """ Rotates the node to the right and returns the new root of the subtree """
+        if node == None or node.left == None:
+            return None
+        
+        X = node
+        Y = X.left
+        B = Y.right
+        
+        # Exchange parents
+        Y.parent = X.parent
+        if X.parent:
+            if X == X.parent.left:
+                X.parent.left = Y
+            else:
+                X.parent.right = Y
+
+        # Rotate upper
+        Y.right = X
+        X.parent = Y
+
+        # Exchange child
+        X.left = B
+        if B:
+            B.parent = X
+        
+        # Update heights
+        X.update_height()
+        Y.update_height()
+        # Ensure root has no parent
+        if X == self.root:
+            self.root = Y
+        return Y
+
+    def rebalance(self, node: Node):
+        """ Rebalances the tree from the given node upwards """
+        if node == None:
+            return
+        node.update_height()
+        balance = node.balance_factor()
+        # LL
+        if balance > 1 and node.left.balance_factor() >= 0:
+            node = self.rotate_right(node)
+        # RR
+        elif balance < -1 and node.right.balance_factor() <= 0:
+            node = self.rotate_left(node)
+        # LR
+        elif balance > 1 and node.left.balance_factor() < 0:
+            self.rotate_left(node.left)
+            node = self.rotate_right(node)
+        # RL
+        elif balance < -1 and node.right.balance_factor() > 0:
+            self.rotate_right(node.right)
+            node = self.rotate_left(node)
+        self.rebalance(node.parent)
+    
     def add(self, *args):
         """ Add only if not exists """
         for item in args:
@@ -120,6 +225,7 @@ class Tree:
                 else:
                     parent.right = Node(item)
                     parent.right.parent = parent
+                self.rebalance(parent)
     
     def __del(self, node: Node):
         # It's a leaf!
@@ -197,3 +303,36 @@ class Tree:
         if (self.root):
             _add(self.root)
         return arr
+
+def plot_tree(node, x = 0, y = 0, x_distance = 1.0, level_gap = 1.5, axes = None, min_value = None, max_value = None):
+    """ Recursively plot the tree using matplotlib """
+    if node is None:
+        return x
+    
+    if min_value is not None and max_value is not None:
+        if node.value < max_value and node.value > min_value:
+            color = "lightgreen"
+        elif node.value == max_value or node.value == min_value:
+            color = "yellow"
+        else:
+            color = "lightgray"
+
+    # Plot left subtree
+    if node.left:
+        plot_tree(node.left, x - x_distance, y - level_gap, x_distance / 2, level_gap, axes, min_value=min_value, max_value=max_value)
+        axes.plot([x, x - x_distance], [y, y - level_gap], 'k-')  # edge line
+    
+    if node.right:
+        plot_tree(node.right, x + x_distance, y - level_gap, x_distance / 2, level_gap, axes, min_value=min_value, max_value=max_value)
+        axes.plot([x, x + x_distance], [y, y - level_gap], 'k-')  # edge line
+
+    axes.scatter(x, y, s=400, c=color, edgecolors="k", zorder=3)
+    axes.text(x, y, str(node), ha="center", va="center", fontsize=10, zorder=4)
+
+def draw_tree(tree: Tree, min_value = None, max_value = None):
+    fig,ax = plt.subplots(figsize=(10, 6))
+    ax.set_axis_off()
+    if tree.root:
+        plot_tree(tree.root, x=0, y=0, level_gap=2, axes=ax, min_value=min_value, max_value=max_value)
+    ax.set_xlim(-0.5, 0.5)
+    plt.show()

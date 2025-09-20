@@ -22,4 +22,4 @@ class Point:
             return self.x < other.x
     
     def __repr__(self):
-        return f"({self.x, self.y})"
+        return f"{(self.x, self.y)}"

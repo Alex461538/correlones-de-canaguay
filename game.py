@@ -130,8 +130,8 @@ def event_update(event: pygame.event.Event):
             if event.button == 1:
                 goto_edit()
 
-def load_visible_obstacles():
-    """ Loads the visible obstacles into the rendering list """
+def get_visible_obstacle_limits():
+    """ Get the visible obstacles edge nodes """
     def compare(x, y):
         if x == y:
             return 0
@@ -139,12 +139,17 @@ def load_visible_obstacles():
             return 1
         return -1
     
-    global rendering_obstacle_list
-    # --- Global decl end ---
-
-    rendering_obstacle_list = []
     low_limit = tree.search_closer(None, lambda obj: compare(0, obj.obstacle.rect.right - road.offset))[0]
     high_limit = tree.search_closer(None, lambda obj: compare(screen_width, obj.obstacle.rect.x - road.offset))[0]
+
+    return (low_limit, high_limit)
+
+def load_visible_obstacles():
+    """ Loads the visible obstacles into the rendering list """
+    global rendering_obstacle_list
+    # --- Global decl end ---
+    low_limit, high_limit = get_visible_obstacle_limits()
+    rendering_obstacle_list = []
 
     # print(low_limit.value, high_limit.value)
     while low_limit != None:

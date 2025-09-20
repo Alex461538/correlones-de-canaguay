@@ -26,12 +26,18 @@ game.init(SCREEN_WIDTH=SCREEN_WIDTH, SCREEN_HEIGHT=SCREEN_HEIGHT)
 # Main loop
 # ------------------------------------------------
 
+from tree import draw_tree
+
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_v:
+                (min_value, max_value) = game.get_visible_obstacle_limits()
+                draw_tree(game.tree, min_value=min_value.value, max_value=max_value.value)
         game.event_update(event)
 
     # fill the screen with a color to wipe away anything from last frame
