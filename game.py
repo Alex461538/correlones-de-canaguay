@@ -227,6 +227,22 @@ def draw(surface: pygame.Surface):
             surface.blit(res.Image.WIN.value, (0, screen_height / 2 - 12))
         elif game_state == State.GAMEOVER:
             surface.blit(res.Image.LOSE.value, (0, screen_height / 2 - 12))
+    
+    road_below_y = road.rect.bottom
+    if game_state == State.EDITING:
+        surface.blit(res.Font.NJ.value.render(f"L/R: Scroll", False, (143, 98, 51)), (0, road_below_y))
+        surface.blit(res.Font.NJ.value.render(f"Wheel: Change", False, (143, 98, 51)), (0, road_below_y + 10))
+        surface.blit(res.Font.NJ.value.render(f"LMB: Place", False, (143, 98, 51)), (0, road_below_y + 20))
+        surface.blit(res.Font.NJ.value.render(f"RMB: Delete", False, (143, 98, 51)), (0, road_below_y + 30))
+        surface.blit(res.Font.NJ.value.render(f"MMB: Change", False, (143, 98, 51)), (0, road_below_y + 40))
+        surface.blit(res.Font.NJ.value.render(f"E: Switch to play", False, (143, 98, 51)), (0, road_below_y + 50))
+        surface.blit(res.Font.NJ.value.render(f"V: See avl", False, (143, 98, 51)), (0, road_below_y + 60))
+    elif game_state == State.PLAYING:
+        surface.blit(res.Font.NJ.value.render(f"E: Switch to edit", False, (143, 98, 51)), (0, road_below_y))
+        surface.blit(res.Font.NJ.value.render(f"Space/C/X: Jump", False, (143, 98, 51)), (0, road_below_y + 10))
+        surface.blit(res.Font.NJ.value.render(f"Up/Down: Dodge", False, (143, 98, 51)), (0, road_below_y + 20))
+        surface.blit(res.Font.NJ.value.render(f"V: See avl", False, (143, 98, 51)), (0, road_below_y + 30))
+
 
 # ------------------------------------------------
 # Save/Load funcs
