@@ -68,23 +68,23 @@ class Cone(Obstacle, damage=10):
 
 def obstacle_damage_from_index(i):
     """ Returns the damage of an obstacle given it's type """
-    tex = obstacle_registry[i]
-    if (tex):
-        return tex.damage
+    target = obstacle_registry[i]
+    if (target):
+        return target.damage
     return 0
 
 def obstacle_texture_from_index(i):
     """ Returns the texture of an obstacle given it's type """
-    tex = obstacle_registry[i]
-    if (tex):
-        return tex.image
+    target = obstacle_registry[i]
+    if (target):
+        return target.image
     return res.Image.HOLE.value
 
 def obstacle_from_index(i: int, x: int = 0, y: int = 0):
     """ Returns an instance of an obstacle given it's type """
-    tex = obstacle_registry[i]
-    if (tex):
-        return tex.constructor(x, y)
+    target = obstacle_registry[i]
+    if (target):
+        return target.constructor(x, y)
     return Hole(x, y)
 
 def get_obstacle_types_count():

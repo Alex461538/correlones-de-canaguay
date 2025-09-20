@@ -20,14 +20,14 @@ class State(Enum):
 
 game_state: State = State.EDITING
 
-edit_scroll_velocity: float = 0
+player_velocity: float = 5
+editing_scroll_velocity: float = 0
+framerate: int = 30
+dialog_timer:int = 0
+screen_width: int = 0
+screen_height: int = 0
 placeholder_texture_index: int = 0
 player_sprite = ""
-player_velocity: float = 5
-framerate: int = 30
-screen_width = 0
-screen_height = 0
-dialog_timer = 0
 
 tree = tree.Tree()
 
@@ -36,6 +36,10 @@ road: Road = None
 player: Player = None
 
 rendering_obstacle_list = []
+
+# ------------------------------------------------
+# State change funcs
+# ------------------------------------------------
 
 def goto_edit():
     """ Change game to edit mode """
@@ -68,6 +72,10 @@ def goto_to_the_graveyard():
     dialog_timer = 0
     game_state = State.GAMEOVER
 
+# ------------------------------------------------
+# Init funcs
+# ------------------------------------------------
+
 def init(SCREEN_WIDTH: int, SCREEN_HEIGHT: int):
     """ Initialize the game's general variables """
     global road, player, screen_width, screen_height
@@ -78,6 +86,10 @@ def init(SCREEN_WIDTH: int, SCREEN_HEIGHT: int):
     screen_width = SCREEN_WIDTH
     screen_height = SCREEN_HEIGHT
     load_json()
+
+# ------------------------------------------------
+# Main loop funcs
+# ------------------------------------------------
 
 def event_update(event: pygame.event.Event):
     """ Updates the game's logic for pygame events """
@@ -131,8 +143,8 @@ def load_visible_obstacles():
     # --- Global decl end ---
 
     rendering_obstacle_list = []
-    low_limit = tree.search_lax(None, lambda obj: compare(0, obj.obstacle.rect.right - road.offset))
-    high_limit = tree.search_lax(None, lambda obj: compare(screen_width, obj.obstacle.rect.x - road.offset))
+    low_limit = tree.search_closer(None, lambda obj: compare(0, obj.obstacle.rect.right - road.offset))[0]
+    high_limit = tree.search_closer(None, lambda obj: compare(screen_width, obj.obstacle.rect.x - road.offset))[0]
 
     # print(low_limit.value, high_limit.value)
     while low_limit != None:
@@ -143,7 +155,7 @@ def load_visible_obstacles():
 
 def update():
     """ Updates the main game's logic """
-    global rendering_obstacle_list, edit_scroll_velocity
+    global rendering_obstacle_list, editing_scroll_velocity
     # --- Global decl end ---
     load_visible_obstacles()
 
@@ -154,8 +166,8 @@ def update():
             sub_vel = -3
         if keys[pygame.K_RIGHT] and road.offset < road.get_size() - screen_width:
             sub_vel = 3
-        edit_scroll_velocity = (edit_scroll_velocity + player_velocity * sub_vel) / 2
-        road.offset += edit_scroll_velocity
+        editing_scroll_velocity = (editing_scroll_velocity + player_velocity * sub_vel) / 2
+        road.offset += editing_scroll_velocity
     road.update()
     player.update()
     if game_state == State.PLAYING:
@@ -180,10 +192,6 @@ def post_update():
         road.offset += player_velocity
     elif game_state == State.WINNER or game_state == State.GAMEOVER:
         dialog_timer += 2
-
-def point_inside_rect(x, y, rect):
-    """ Checks if a point (x, y) is inside a pygame rect """
-    return x >= rect.x and x <= rect.right and y >= rect.y and y <= rect.bottom
 
 def draw(surface: pygame.Surface):
     """ Draws the game content to a surface """
@@ -214,6 +222,10 @@ def draw(surface: pygame.Surface):
             surface.blit(res.Image.WIN.value, (0, screen_height / 2 - 12))
         elif game_state == State.GAMEOVER:
             surface.blit(res.Image.LOSE.value, (0, screen_height / 2 - 12))
+
+# ------------------------------------------------
+# Save/Load funcs
+# ------------------------------------------------
 
 def load_json():
     """ Load configurable data from disk """
@@ -250,3 +262,11 @@ def save_json():
             },
             "objects": [{ "x": obj.x, "y": obj.y, "type": obj.obstacle.type } for obj in tree.LIR_list()]
         }, file, indent=4)
+
+# ------------------------------------------------
+# Misc
+# ------------------------------------------------
+
+def point_inside_rect(x, y, rect):
+    """ Checks if a point (x, y) is inside a pygame rect """
+    return x >= rect.x and x <= rect.right and y >= rect.y and y <= rect.bottom

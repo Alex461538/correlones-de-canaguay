@@ -1,8 +1,9 @@
 import pygame
 
 class Road(pygame.sprite.Sprite):
-    """ An infinitely large road with a finnish line """
+    """ Road class, handles the road drawing and logic """
     def __init__(self, screen_width = 0, length = 5):
+       """ Road constructor """
        pygame.sprite.Sprite.__init__(self)
        self.image = pygame.image.load("img/calle.png").convert_alpha()
        self.goal_image = pygame.image.load("img/goal.png").convert_alpha()
@@ -23,7 +24,7 @@ class Road(pygame.sprite.Sprite):
     
     def draw(self, screen):
         """
-        Draws the road to a pygame screen
+        Draws the road to a given surface
         """
         start = -1
         stop = self.screen_width // self.rect.w + 1

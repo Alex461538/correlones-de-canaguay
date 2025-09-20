@@ -5,7 +5,9 @@ import time
 MAX_LANES = 3
 
 class Player(pygame.sprite.Sprite):
+    """ Player class, handles the player drawing and logic """
     def __init__(self, road):
+       """ Initialize the player """
        pygame.sprite.Sprite.__init__(self)
        # Create an image of the block, and fill it with a color.
        # This could also be an image loaded from the disk.
@@ -24,7 +26,7 @@ class Player(pygame.sprite.Sprite):
        self.damaged_timer = 0
     
     def update(self, *args, **kwargs):
-        """ Update player's main logic """
+        """ Update the player state """
         if self.damaged_timer > 0:
             self.damaged_timer -= 1
         if self.jumping:
@@ -53,13 +55,13 @@ class Player(pygame.sprite.Sprite):
         self.jumping = True
     
     def damage(self, damage: int = 0):
-        """ Damages the player by a given amount if it hasn't the knockback effect """
+        """ Inflict damage to the player """
         if self.damaged_timer == 0:
             self.HP = max(self.HP - damage, 0)
             self.damaged_timer = 30
     
     def draw(self, screen):
-        """ Draw the player """
+        """ Draw the player to a surface """
         swing_y = 2 * math.sin(time.time() * 3)
         # Calcula la altura del salto basandose en el seno de jump_timer restringido en [ 0, pi ]
         jump_y = self.rect.h * math.sin( math.pi * float(self.jump_timer) / self.jump_distance )
@@ -72,6 +74,7 @@ class Player(pygame.sprite.Sprite):
             rot_image = pygame.transform.rotate(self.image, jump_angle)
             rot_rect = rot_image.get_rect(center=self.rect.center)
         else:
+            rot_rect = self.image.get_rect(center=self.rect.center)
             rot_image = self.image
         pygame.draw.ellipse(screen, (92, 19, 19), (self.rect.x + 2, self.y + self.rect.h - 3 + swing_y, self.rect.w-4, 4))
         if self.damaged_timer % 2 == 0:

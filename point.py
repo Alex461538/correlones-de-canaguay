@@ -1,6 +1,6 @@
 class Point:
     """
-    A 2d vector for an easy lookup of the obstacles
+    A 2d vector for an easy lookup of obstacles
     """
     def __init__(self, x = 0, y = 0, obstacle = None):
         self.x = x
