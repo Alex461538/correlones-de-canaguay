@@ -12,3 +12,6 @@ class Image(Enum):
     BG = pygame.image.load("img/bg.png")
     WIN = pygame.image.load("img/msg-win.png")
     LOSE = pygame.image.load("img/msg-lose.png")
+    PETRO = pygame.image.load("img/petro.png")
+    EVIL_TAXI = pygame.transform.flip(pygame.image.load("img/taxi.png").convert_alpha(), True, False) 
+    EVIL_BUS = pygame.transform.flip(pygame.image.load("img/luna-bus.png").convert_alpha(), True, False) 

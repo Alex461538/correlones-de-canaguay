@@ -66,26 +66,42 @@ class Cone(Obstacle, damage=10):
     def load_image(self):
         return res.Image.CONE.value
 
+class EvilTaxi(Obstacle, damage=30):
+    """ An orange cone """
+    def __init__(self, x=0, y=0):
+        super().__init__(x, y)
+    
+    def load_image(self):
+        return res.Image.EVIL_TAXI.value
+
+class SolidPetro(Obstacle, damage=30):
+    """ An orange cone """
+    def __init__(self, x=0, y=0):
+        super().__init__(x, y)
+    
+    def load_image(self):
+        return res.Image.PETRO.value
+
 def obstacle_damage_from_index(i):
     """ Returns the damage of an obstacle given it's type """
-    target = obstacle_registry[i]
-    if (target):
-        return target.damage
-    return 0
+    try:
+        return obstacle_registry[i].damage
+    except KeyError:
+        return 0
 
 def obstacle_texture_from_index(i):
     """ Returns the texture of an obstacle given it's type """
-    target = obstacle_registry[i]
-    if (target):
-        return target.image
-    return res.Image.HOLE.value
+    try:
+        return obstacle_registry[i].image
+    except KeyError:
+        return res.Image.HOLE.value
 
 def obstacle_from_index(i: int, x: int = 0, y: int = 0):
     """ Returns an instance of an obstacle given it's type """
-    target = obstacle_registry[i]
-    if (target):
-        return target.constructor(x, y)
-    return Hole(x, y)
+    try:
+        return obstacle_registry[i].constructor(x, y)
+    except KeyError:
+        return Hole(x, y)
 
 def get_obstacle_types_count():
     """ Get the obstacle variants count """

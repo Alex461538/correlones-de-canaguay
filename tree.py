@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import matplotlib.patches as pat
+from matplotlib.animation import FuncAnimation
 from typing import Optional, Any
 
 class Node:
@@ -303,36 +305,86 @@ class Tree:
         if (self.root):
             _add(self.root)
         return arr
-
-def plot_tree(node, x = 0, y = 0, x_distance = 1.0, level_gap = 1.5, axes = None, min_value = None, max_value = None):
-    """ Recursively plot the tree using matplotlib """
-    if node is None:
-        return x
     
-    if min_value is not None and max_value is not None:
-        if node.value < max_value and node.value > min_value:
-            color = "lightgreen"
-        elif node.value == max_value or node.value == min_value:
-            color = "yellow"
-        else:
-            color = "lightgray"
-
-    # Plot left subtree
-    if node.left:
-        plot_tree(node.left, x - x_distance, y - level_gap, x_distance / 2, level_gap, axes, min_value=min_value, max_value=max_value)
-        axes.plot([x, x - x_distance], [y, y - level_gap], 'k-')  # edge line
-    
-    if node.right:
-        plot_tree(node.right, x + x_distance, y - level_gap, x_distance / 2, level_gap, axes, min_value=min_value, max_value=max_value)
-        axes.plot([x, x + x_distance], [y, y - level_gap], 'k-')  # edge line
-
-    axes.scatter(x, y, s=400, c=color, edgecolors="k", zorder=3)
-    axes.text(x, y, str(node), ha="center", va="center", fontsize=10, zorder=4)
+    def DEPTH_list(self):
+        arr = []
+        def _add(node: Node, depth=0):
+            if (len(arr) <= depth):
+                arr.append([])
+            arr[depth].append(node.value)
+            if (node.left):
+                _add(node.left, depth + 1)
+            if (node.right):
+                _add(node.right, depth + 1)
+        if (self.root):
+            _add(self.root)
+        return [item for sublist in arr for item in sublist]
 
 def draw_tree(tree: Tree, min_value = None, max_value = None):
-    fig,ax = plt.subplots(figsize=(10, 6))
-    ax.set_axis_off()
-    if tree.root:
-        plot_tree(tree.root, x=0, y=0, level_gap=2, axes=ax, min_value=min_value, max_value=max_value)
-    ax.set_xlim(-0.5, 0.5)
+    """ Draws the tree with its traversals using matplotlib """
+    figure, axes = plt.subplots(figsize=(10, 6))
+    axes.set_axis_off()
+
+    positions = {}
+
+    def _fill(node, x=0, y=0, depth=0):
+        if node is None:
+            return
+        
+        color = "lightgray"
+        if min_value is not None and max_value is not None:
+            if node.value < max_value and node.value > min_value:
+                color = "lightgreen"
+            elif node.value == max_value or node.value == min_value:
+                color = "yellow"
+
+        positions[(node.value.x, node.value.y)] = (x, y)
+
+        if node.left:
+            axes.plot([x, x - 1/(2**depth)], [y, y - 1], 'k-') 
+            _fill(node.left, x - 1/(2**depth), y - 1, depth + 1)
+        if node.right:
+            axes.plot([x, x + 1/(2**depth)], [y, y - 1], 'k-') 
+            _fill(node.right, x + 1/(2**depth), y - 1, depth + 1)
+
+        w = 0.4 / 10
+        h = 0.4
+        axes.add_patch(pat.Rectangle((x - w / 2, y - h / 2), width=w, height=h, color=color, zorder=3))
+        axes.text(x, y, f"{node.value.x},{node.value.y}", ha="center", va="center", fontsize=7, zorder=4)
+
+    _fill(tree.root)
+
+    axes.set_xlim(-0.5, 0.5)
+    axes.text(-0.15, -1, "PRE", ha="center", va="center", fontsize=12, zorder=4, color=(1, 0, 0, 0.8))
+    axes.text(-0.05, -1, "INO", ha="center", va="center", fontsize=12, zorder=4, color=(0, 1, 0, 0.8))
+    axes.text(0.05, -1, "POS", ha="center", va="center", fontsize=12, zorder=4, color=(0, 0, 1, 0.8))
+    axes.text(0.15, -1, "DEPTH", ha="center", va="center", fontsize=12, zorder=4, color=(1, 1, 0, 0.8))
+
+    h = 0.6
+    w = h / 10
+    preo_f = axes.add_patch(pat.Rectangle((0, 0), width=w, height=h, color=(1, 0, 0, 0.8), zorder=1))
+    ino_f = axes.add_patch(pat.Rectangle((0, 0), width=w, height=h, color=(0, 1, 0, 0.8), zorder=1))
+    poso_f = axes.add_patch(pat.Rectangle((0, 0), width=w, height=h, color=(0, 0, 1, 0.8), zorder=1))
+    deptho_f = axes.add_patch(pat.Rectangle((0, 0), width=w, height=h, color=(1, 1, 0, 0.8), zorder=1))
+    while plt.fignum_exists(figure.number):
+        PRE_l = tree.ILR_list()
+        INO_l = tree.LIR_list()
+        POS_l = tree.LRI_list()
+        DEP_l = tree.DEPTH_list()
+        for i in range(len(PRE_l)):
+            pos = positions[(PRE_l[i].x, PRE_l[i].y)]
+            preo_f.set_xy((pos[0] - w / 2, pos[1] - h / 2))
+
+            pos = positions[(INO_l[i].x, INO_l[i].y)]
+            ino_f.set_xy((pos[0] - w / 2, pos[1] - h / 2))
+
+            pos = positions[(POS_l[i].x, POS_l[i].y)]
+            poso_f.set_xy((pos[0] - w / 2, pos[1] - h / 2))
+
+            pos = positions[(DEP_l[i].x, DEP_l[i].y)]
+            deptho_f.set_xy((pos[0] - w / 2, pos[1] - h / 2))
+            plt.pause(0.4)
+            if not plt.fignum_exists(figure.number):
+                break
+    
     plt.show()
