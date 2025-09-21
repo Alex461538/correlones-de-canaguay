@@ -1,3 +1,5 @@
+""" Module for defining a balanced binary search tree with visualization capabilities """
+
 import matplotlib.pyplot as plt
 import matplotlib.patches as pat
 from matplotlib.animation import FuncAnimation
@@ -12,11 +14,17 @@ class Node:
     height: int = 1
 
     def __init__(self, value):
-        """ Node constructor """
+        """ 
+        Node constructor
+        Args:
+            value (Any): The value of the node
+        """
         self.value = value
     
-    def prev(self):
-        """ Returns the previous node in in-order traversal """
+    def prev(self) -> Optional["Node"]:
+        """ 
+        Returns the previous node in in-order traversal
+        """
         node = self
         # si hay arbol izquierdo le entra
         if node.left:
@@ -31,7 +39,7 @@ class Node:
             node = node.parent
         return node.parent
     
-    def next(self):
+    def next(self) -> Optional["Node"]:
         """ Returns the next node in in-order traversal """
         node = self
         # si hay arbol derecho le entra
@@ -57,20 +65,22 @@ class Node:
             self.parent.right = None
         self.parent = None
     
-    def has_childs(self):
+    def has_childs(self) -> bool:
         """ Returns True if has at least one child """
         return self.left != None or self.right != None
     
-    def has_full_capacity(self):
+    def has_full_capacity(self) -> bool:
         """ Returns True if has both childs """
         return self.left != None and self.right != None
     
     def update_height(self):
+        """ Updates the height of the node """
         left_h = self.left.height if self.left else 0
         right_h = self.right.height if self.right else 0
         self.height = 1 + max(left_h, right_h)
 
-    def balance_factor(self):
+    def balance_factor(self) -> int:
+        """ Returns the balance factor of the node """
         left_h = self.left.height if self.left else 0
         right_h = self.right.height if self.right else 0
         return left_h - right_h
@@ -82,12 +92,19 @@ class Tree:
     """ Binary Search Tree """
     root: Optional["Node"] = None
 
-    def search_closer(self, item, cmp_func = None):
-        """ 
-            Search but return allways
-            - returns (Node, True) if found
-            - returns (Node, False) if not found, Node is the parent where it could be added
-            - returns (None, False) if tree is empty
+    def search_closer(self, item, cmp_func = None) -> tuple[Optional[Node], bool]:
+        """
+        Search but return allways
+        - returns (Node, True) if found
+        - returns (Node, False) if not found, Node is the parent where it could be added
+        - returns (None, False) if tree is empty
+
+        Args:
+            item (Any): The item to search for
+            cmp_func (callable, optional): A comparison function that takes an item and returns: If None, the default comparison operators will be used.
+        
+        Returns:
+            (Optional[Node], bool): A tuple containing the found node (or parent)
         """
         if self.root == None:
             return (None, False)
@@ -115,17 +132,29 @@ class Tree:
                     return (node, False)
             return (None, False)
 
-    def search(self, item):
-        """ Search and return None if not found """
+    def search(self, item) -> Optional[Node]:
+        """ 
+        Search and return None if not found
+        Args:
+            item (Any): The item to search for
+        Returns:
+            Optional[Node]: The found node or None if not found
+        """
         target = self.search_closer(item)
         if target[1]:
             return target[0]
         return None
     
-    def rotate_left(self, node: Node):
-        """ Rotates the node to the left and returns the new root of the subtree """
+    def rotate_left(self, node: Node) -> Optional[Node]:
+        """ 
+        Rotates the node to the left and returns the new root of the subtree
+        Args:
+            node (Node): The node to rotate
+        Returns:
+            Optional[Node]: The new root of the subtree or None if rotation is not possible
+        """
         if node == None or node.right == None:
-            return None
+            return node
         
         X = node
         Y = X.right
@@ -156,10 +185,16 @@ class Tree:
             self.root = Y
         return Y
     
-    def rotate_right(self, node: Node):
-        """ Rotates the node to the right and returns the new root of the subtree """
+    def rotate_right(self, node: Node) -> Optional[Node]:
+        """ 
+        Rotates the node to the right and returns the new root of the subtree
+        Args:
+            node (Node): The node to rotate
+        Returns:
+            Optional[Node]: The new root of the subtree or None if rotation is not possible
+        """
         if node == None or node.left == None:
-            return None
+            return node
         
         X = node
         Y = X.left
@@ -191,7 +226,11 @@ class Tree:
         return Y
 
     def rebalance(self, node: Node):
-        """ Rebalances the tree from the given node upwards """
+        """ 
+        Rebalances the tree from the given node upwards
+        Args:
+            node (Node): The node to start rebalancing from
+        """
         if node == None:
             return
         node.update_height()
@@ -213,7 +252,11 @@ class Tree:
         self.rebalance(node.parent)
     
     def add(self, *args):
-        """ Add only if not exists """
+        """ 
+        Add only if not exists
+        Args:
+            *args (Any): The items to add
+        """
         for item in args:
             target = self.search_closer(item)
             if target[0] == None: # Tree is empty
@@ -256,6 +299,11 @@ class Tree:
                 node.left.parent = node
     
     def delete(self, *args):
+        """
+        Delete items if they exist
+        Args:
+            *args (Any): The items to delete
+        """
         for item in args:
             target = self.search(item)
             if target != None:
@@ -264,13 +312,24 @@ class Tree:
     def __contains__(self, item):
         return self.search(item) != None
     
-    def contains(self, item):
+    def contains(self, item) -> bool:
+        """
+        Check if the tree contains the item
+        Args:
+            item (Any): The item to check for
+        Returns:
+            bool: True if the item is in the tree, False otherwise
+        """
         return item in self
     
     def clear(self):
+        """ Clear the tree """
         self.root = None
     
-    def LIR_list(self):
+    def LIR_list(self) -> list:
+        """
+        Returns the in-order traversal of the tree as a list
+        """
         arr = []
         def _add(node: Node):
             if (node.left):
@@ -282,7 +341,10 @@ class Tree:
             _add(self.root)
         return arr
     
-    def ILR_list(self):
+    def ILR_list(self) -> list:
+        """
+        Returns the pre-order traversal of the tree as a list
+        """
         arr = []
         def _add(node: Node):
             arr.append(node.value)
@@ -294,7 +356,10 @@ class Tree:
             _add(self.root)
         return arr
     
-    def LRI_list(self):
+    def LRI_list(self) -> list:
+        """
+        Returns the post-order traversal of the tree as a list
+        """
         arr = []
         def _add(node: Node):
             if (node.left):
@@ -306,7 +371,10 @@ class Tree:
             _add(self.root)
         return arr
     
-    def DEPTH_list(self):
+    def BREADTH_list(self) -> list:
+        """
+        Returns the breadth-first traversal of the tree as a list
+        """
         arr = []
         def _add(node: Node, depth=0):
             if (len(arr) <= depth):
@@ -321,7 +389,13 @@ class Tree:
         return [item for sublist in arr for item in sublist]
 
 def draw_tree(tree: Tree, min_value = None, max_value = None):
-    """ Draws the tree with its traversals using matplotlib """
+    """ 
+    Draws the tree with its traversals using matplotlib
+    Args:
+        tree (Tree): The tree to draw
+        min_value (Any, optional): A minimum value to highlight
+        max_value (Any, optional): A maximum value to highlight
+    """
     figure, axes = plt.subplots(figsize=(10, 6))
     axes.set_axis_off()
 
@@ -358,7 +432,7 @@ def draw_tree(tree: Tree, min_value = None, max_value = None):
     axes.text(-0.15, -1, "PRE", ha="center", va="center", fontsize=12, zorder=4, color=(1, 0, 0, 0.8))
     axes.text(-0.05, -1, "INO", ha="center", va="center", fontsize=12, zorder=4, color=(0, 1, 0, 0.8))
     axes.text(0.05, -1, "POS", ha="center", va="center", fontsize=12, zorder=4, color=(0, 0, 1, 0.8))
-    axes.text(0.15, -1, "DEPTH", ha="center", va="center", fontsize=12, zorder=4, color=(1, 1, 0, 0.8))
+    axes.text(0.15, -1, "Breadth", ha="center", va="center", fontsize=12, zorder=4, color=(1, 1, 0, 0.8))
 
     h = 0.6
     w = h / 10
@@ -370,7 +444,7 @@ def draw_tree(tree: Tree, min_value = None, max_value = None):
         PRE_l = tree.ILR_list()
         INO_l = tree.LIR_list()
         POS_l = tree.LRI_list()
-        DEP_l = tree.DEPTH_list()
+        DEP_l = tree.BREADTH_list()
         for i in range(len(PRE_l)):
             pos = positions[(PRE_l[i].x, PRE_l[i].y)]
             preo_f.set_xy((pos[0] - w / 2, pos[1] - h / 2))

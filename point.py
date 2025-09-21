@@ -1,8 +1,16 @@
+""" Module for defining a 2D point with an optional obstacle reference """
+
 class Point:
     """
     A 2d vector for an easy lookup of obstacles
     """
     def __init__(self, x = 0, y = 0, obstacle = None):
+        """
+        Args:
+            x (int): The x coordinate
+            y (int): The y coordinate
+            obstacle (Obstacle): The obstacle this point represents
+        """
         self.x = x
         self.y = y
         self.obstacle = obstacle

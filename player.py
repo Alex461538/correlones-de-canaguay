@@ -1,29 +1,36 @@
+""" Module for defining the player in the game """
+
 import pygame
 import math
 import time
+from road import Road
 
 MAX_LANES = 3
 
 class Player(pygame.sprite.Sprite):
     """ Player class, handles the player drawing and logic """
-    def __init__(self, road):
-       """ Initialize the player """
-       pygame.sprite.Sprite.__init__(self)
-       # Create an image of the block, and fill it with a color.
-       # This could also be an image loaded from the disk.
-       self.image = pygame.image.load("img/player.png").convert_alpha()
-       # Fetch the rectangle object that has the dimensions of the image
-       # Update the position of this object by setting the values of rect.x and rect.y
-       self.rect = self.image.get_rect()
-       self.road = road
-       self.lane = 0
-       self.y = 0
-       self.jump_timer = 0
-       self.jump_distance = 32
-       self.jumping = False
-       self.HP = 100
-       self.max_HP = 100
-       self.damaged_timer = 0
+    def __init__(self, road: Road):
+        """ 
+        Initialize the player
+        Args:
+            road (Road): The road the player is on
+        """
+        pygame.sprite.Sprite.__init__(self)
+        # Create an image of the block, and fill it with a color.
+        # This could also be an image loaded from the disk.
+        self.image = pygame.image.load("img/player.png").convert_alpha()
+        # Fetch the rectangle object that has the dimensions of the image
+        # Update the position of this object by setting the values of rect.x and rect.y
+        self.rect = self.image.get_rect()
+        self.road = road
+        self.lane = 0
+        self.y = 0
+        self.jump_timer = 0
+        self.jump_distance = 32
+        self.jumping = False
+        self.HP = 100
+        self.max_HP = 100
+        self.damaged_timer = 0
     
     def update(self, *args, **kwargs):
         """ Update the player state """
@@ -55,13 +62,21 @@ class Player(pygame.sprite.Sprite):
         self.jumping = True
     
     def damage(self, damage: int = 0):
-        """ Inflict damage to the player """
+        """ 
+        Inflict damage to the player
+        Args:
+            damage (int): The amount of damage to inflict
+        """
         if self.damaged_timer == 0:
             self.HP = max(self.HP - damage, 0)
             self.damaged_timer = 30
     
-    def draw(self, screen):
-        """ Draw the player to a surface """
+    def draw(self, screen: pygame.Surface):
+        """ 
+        Draw the player to a surface
+        Args:
+            screen (pygame.Surface): The surface to draw the player on
+        """
         swing_y = 2 * math.sin(time.time() * 3)
         # Calcula la altura del salto basandose en el seno de jump_timer restringido en [ 0, pi ]
         jump_y = self.rect.h * math.sin( math.pi * float(self.jump_timer) / self.jump_distance )

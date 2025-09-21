@@ -1,8 +1,11 @@
+""" Main game logic module """
+
 import pygame
 import json
 import tree
 import res
 
+from tree import Node
 from enum import Enum
 
 from road import Road
@@ -77,7 +80,12 @@ def goto_to_the_graveyard():
 # ------------------------------------------------
 
 def init(SCREEN_WIDTH: int, SCREEN_HEIGHT: int):
-    """ Initialize the game's general variables """
+    """ 
+    Initialize the game's general variables 
+    Args:
+        SCREEN_WIDTH (int): The width of the game window
+        SCREEN_HEIGHT (int): The height of the game window
+    """
     global road, player, screen_width, screen_height
     # --- Global decl end ---
     road = Road(screen_width=SCREEN_WIDTH, length=5)
@@ -92,7 +100,11 @@ def init(SCREEN_WIDTH: int, SCREEN_HEIGHT: int):
 # ------------------------------------------------
 
 def event_update(event: pygame.event.Event):
-    """ Updates the game's logic for pygame events """
+    """ 
+    Updates the game's logic for pygame events 
+    Args:
+        event (pygame.event.Event): The event to process
+    """
     global placeholder_texture_index
     # --- Global decl end ---
     if game_state == State.EDITING:
@@ -130,8 +142,12 @@ def event_update(event: pygame.event.Event):
             if event.button == 1:
                 goto_edit()
 
-def get_visible_obstacle_limits():
-    """ Get the visible obstacles edge nodes """
+def get_visible_obstacle_limits() -> tuple[Node, Node]:
+    """ 
+    Get the visible obstacles edge nodes 
+    Returns:
+        (Point, Point): The low and high limit point associated nodes
+    """
     def compare(x, y):
         if x == y:
             return 0
@@ -288,6 +304,14 @@ def save_json():
 # Misc
 # ------------------------------------------------
 
-def point_inside_rect(x, y, rect):
-    """ Checks if a point (x, y) is inside a pygame rect """
+def point_inside_rect(x: int, y: int, rect: pygame.Rect) -> bool:
+    """ 
+    Checks if a point (x, y) is inside a pygame rect
+    Args:
+        x (int): The x coordinate of the point
+        y (int): The y coordinate of the point
+        rect (pygame.Rect): The rectangle to check against
+    Returns:
+        bool: True if the point is inside the rectangle, False otherwise
+    """
     return x >= rect.x and x <= rect.right and y >= rect.y and y <= rect.bottom
