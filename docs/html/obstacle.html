@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>obstacle module &mdash; Canaguay 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="player module" href="player.html" />
+    <link rel="prev" title="main module" href="main.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Canaguay
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">canaguay</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="game.html">game module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">obstacle module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.Cone"><code class="docutils literal notranslate"><span class="pre">Cone</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.Cone.load_image"><code class="docutils literal notranslate"><span class="pre">Cone.load_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.Cone.type"><code class="docutils literal notranslate"><span class="pre">Cone.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.EvilTaxi"><code class="docutils literal notranslate"><span class="pre">EvilTaxi</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.EvilTaxi.load_image"><code class="docutils literal notranslate"><span class="pre">EvilTaxi.load_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.EvilTaxi.type"><code class="docutils literal notranslate"><span class="pre">EvilTaxi.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.Hole"><code class="docutils literal notranslate"><span class="pre">Hole</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.Hole.load_image"><code class="docutils literal notranslate"><span class="pre">Hole.load_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.Hole.type"><code class="docutils literal notranslate"><span class="pre">Hole.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.Obstacle"><code class="docutils literal notranslate"><span class="pre">Obstacle</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.Obstacle.as_point"><code class="docutils literal notranslate"><span class="pre">Obstacle.as_point()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.Obstacle.load_image"><code class="docutils literal notranslate"><span class="pre">Obstacle.load_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.Obstacle.type"><code class="docutils literal notranslate"><span class="pre">Obstacle.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.ObstacleEntry"><code class="docutils literal notranslate"><span class="pre">ObstacleEntry</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.SolidPetro"><code class="docutils literal notranslate"><span class="pre">SolidPetro</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.SolidPetro.load_image"><code class="docutils literal notranslate"><span class="pre">SolidPetro.load_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#obstacle.SolidPetro.type"><code class="docutils literal notranslate"><span class="pre">SolidPetro.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.get_obstacle_types_count"><code class="docutils literal notranslate"><span class="pre">get_obstacle_types_count()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.obstacle_damage_from_index"><code class="docutils literal notranslate"><span class="pre">obstacle_damage_from_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.obstacle_from_index"><code class="docutils literal notranslate"><span class="pre">obstacle_from_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#obstacle.obstacle_texture_from_index"><code class="docutils literal notranslate"><span class="pre">obstacle_texture_from_index()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="player.html">player module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="point.html">point module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="road.html">road module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tree.html">tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="res.html">res module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Canaguay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">canaguay</a></li>
+      <li class="breadcrumb-item active">obstacle module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/obstacle.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-obstacle">
+<span id="obstacle-module"></span><h1>obstacle module<a class="headerlink" href="#module-obstacle" title="Link to this heading"></a></h1>
+<p>Module for defining obstacles in the game</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="obstacle.Cone">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">Cone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#Cone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.Cone" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#obstacle.Obstacle" title="obstacle.Obstacle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Obstacle</span></code></a></p>
+<p>An orange cone</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="obstacle.Cone.load_image">
+<span class="sig-name descname"><span class="pre">load_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#Cone.load_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.Cone.load_image" title="Link to this definition"></a></dt>
+<dd><p>Create an image of the obstacle, and fill it with a color.
+This could also be an image loaded from the disk.
+Returns:</p>
+<blockquote>
+<div><p>pygame.Surface: The image representing the obstacle</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="obstacle.Cone.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#obstacle.Cone.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="obstacle.EvilTaxi">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">EvilTaxi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#EvilTaxi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.EvilTaxi" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#obstacle.Obstacle" title="obstacle.Obstacle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Obstacle</span></code></a></p>
+<p>An orange cone</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="obstacle.EvilTaxi.load_image">
+<span class="sig-name descname"><span class="pre">load_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#EvilTaxi.load_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.EvilTaxi.load_image" title="Link to this definition"></a></dt>
+<dd><p>Create an image of the obstacle, and fill it with a color.
+This could also be an image loaded from the disk.
+Returns:</p>
+<blockquote>
+<div><p>pygame.Surface: The image representing the obstacle</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="obstacle.EvilTaxi.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#obstacle.EvilTaxi.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="obstacle.Hole">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">Hole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#Hole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.Hole" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#obstacle.Obstacle" title="obstacle.Obstacle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Obstacle</span></code></a></p>
+<p>A hole in the road</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="obstacle.Hole.load_image">
+<span class="sig-name descname"><span class="pre">load_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#Hole.load_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.Hole.load_image" title="Link to this definition"></a></dt>
+<dd><p>Create an image of the obstacle, and fill it with a color.
+This could also be an image loaded from the disk.
+Returns:</p>
+<blockquote>
+<div><p>pygame.Surface: The image representing the obstacle</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="obstacle.Hole.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#obstacle.Hole.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="obstacle.Obstacle">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">Obstacle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#Obstacle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.Obstacle" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sprite</span></code></p>
+<p>Base class for an obstacle</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="obstacle.Obstacle.as_point">
+<span class="sig-name descname"><span class="pre">as_point</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="point.html#point.Point" title="point.Point"><span class="pre">Point</span></a></span></span><a class="reference internal" href="_modules/obstacle.html#Obstacle.as_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.Obstacle.as_point" title="Link to this definition"></a></dt>
+<dd><p>Wraps the object as a point for tree-lookup.
+Lookup has to be easy, but comparison operators can’t be overloaded without making this unhashable
+Returns:</p>
+<blockquote>
+<div><p>Point: A point representing the obstacle’s position</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="obstacle.Obstacle.load_image">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pygame.Surface</span></span></span><a class="reference internal" href="_modules/obstacle.html#Obstacle.load_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.Obstacle.load_image" title="Link to this definition"></a></dt>
+<dd><p>Create an image of the obstacle, and fill it with a color.
+This could also be an image loaded from the disk.
+Returns:</p>
+<blockquote>
+<div><p>pygame.Surface: The image representing the obstacle</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="obstacle.Obstacle.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#obstacle.Obstacle.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="obstacle.ObstacleEntry">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">ObstacleEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">damage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#ObstacleEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.ObstacleEntry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Offers globally accesible info for each type of obstacle
+Attributes:</p>
+<blockquote>
+<div><p>damage (int): The damage the obstacle deals
+name (str): The name of the obstacle
+constructor (callable): The class constructor for the obstacle
+image (pygame.Surface): The image representing the obstacle</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="obstacle.SolidPetro">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">SolidPetro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#SolidPetro"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.SolidPetro" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#obstacle.Obstacle" title="obstacle.Obstacle"><code class="xref py py-class docutils literal notranslate"><span class="pre">Obstacle</span></code></a></p>
+<p>An orange cone</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="obstacle.SolidPetro.load_image">
+<span class="sig-name descname"><span class="pre">load_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/obstacle.html#SolidPetro.load_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.SolidPetro.load_image" title="Link to this definition"></a></dt>
+<dd><p>Create an image of the obstacle, and fill it with a color.
+This could also be an image loaded from the disk.
+Returns:</p>
+<blockquote>
+<div><p>pygame.Surface: The image representing the obstacle</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="obstacle.SolidPetro.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#obstacle.SolidPetro.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="obstacle.get_obstacle_types_count">
+<span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">get_obstacle_types_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/obstacle.html#get_obstacle_types_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.get_obstacle_types_count" title="Link to this definition"></a></dt>
+<dd><p>Get the obstacle variants count
+Returns:</p>
+<blockquote>
+<div><p>int: The number of obstacle types</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="obstacle.obstacle_damage_from_index">
+<span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">obstacle_damage_from_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/obstacle.html#obstacle_damage_from_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.obstacle_damage_from_index" title="Link to this definition"></a></dt>
+<dd><p>Returns the damage of an obstacle given it’s type
+Args:</p>
+<blockquote>
+<div><p>i (int): The index of the obstacle type</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>int: The damage the obstacle deals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="obstacle.obstacle_from_index">
+<span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">obstacle_from_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#obstacle.Obstacle" title="obstacle.Obstacle"><span class="pre">Obstacle</span></a></span></span><a class="reference internal" href="_modules/obstacle.html#obstacle_from_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.obstacle_from_index" title="Link to this definition"></a></dt>
+<dd><p>Returns an instance of an obstacle given it’s type 
+Args:</p>
+<blockquote>
+<div><p>i (int): The index of the obstacle type
+x (int): The x coordinate of the obstacle
+y (int): The y coordinate of the obstacle</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Obstacle: An instance of the obstacle</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="obstacle.obstacle_texture_from_index">
+<span class="sig-prename descclassname"><span class="pre">obstacle.</span></span><span class="sig-name descname"><span class="pre">obstacle_texture_from_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pygame.Surface</span></span></span><a class="reference internal" href="_modules/obstacle.html#obstacle_texture_from_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#obstacle.obstacle_texture_from_index" title="Link to this definition"></a></dt>
+<dd><p>Returns the texture of an obstacle given it’s type
+Args:</p>
+<blockquote>
+<div><p>i (int): The index of the obstacle type</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>pygame.Surface: The image representing the obstacle</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="main.html" class="btn btn-neutral float-left" title="main module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="player.html" class="btn btn-neutral float-right" title="player module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alex Granada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

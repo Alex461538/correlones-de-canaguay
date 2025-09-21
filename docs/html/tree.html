@@ -1,0 +1,386 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tree module &mdash; Canaguay 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="res module" href="res.html" />
+    <link rel="prev" title="road module" href="road.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Canaguay
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">canaguay</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="game.html">game module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obstacle.html">obstacle module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player.html">player module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="point.html">point module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="road.html">road module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">tree module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tree.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.balance_factor"><code class="docutils literal notranslate"><span class="pre">Node.balance_factor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.detach_from_parent"><code class="docutils literal notranslate"><span class="pre">Node.detach_from_parent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.has_childs"><code class="docutils literal notranslate"><span class="pre">Node.has_childs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.has_full_capacity"><code class="docutils literal notranslate"><span class="pre">Node.has_full_capacity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.height"><code class="docutils literal notranslate"><span class="pre">Node.height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.left"><code class="docutils literal notranslate"><span class="pre">Node.left</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.next"><code class="docutils literal notranslate"><span class="pre">Node.next()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.parent"><code class="docutils literal notranslate"><span class="pre">Node.parent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.prev"><code class="docutils literal notranslate"><span class="pre">Node.prev()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.right"><code class="docutils literal notranslate"><span class="pre">Node.right</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.update_height"><code class="docutils literal notranslate"><span class="pre">Node.update_height()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Node.value"><code class="docutils literal notranslate"><span class="pre">Node.value</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tree.Tree"><code class="docutils literal notranslate"><span class="pre">Tree</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.BREADTH_list"><code class="docutils literal notranslate"><span class="pre">Tree.BREADTH_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.ILR_list"><code class="docutils literal notranslate"><span class="pre">Tree.ILR_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.LIR_list"><code class="docutils literal notranslate"><span class="pre">Tree.LIR_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.LRI_list"><code class="docutils literal notranslate"><span class="pre">Tree.LRI_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.add"><code class="docutils literal notranslate"><span class="pre">Tree.add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.clear"><code class="docutils literal notranslate"><span class="pre">Tree.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.contains"><code class="docutils literal notranslate"><span class="pre">Tree.contains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.delete"><code class="docutils literal notranslate"><span class="pre">Tree.delete()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.rebalance"><code class="docutils literal notranslate"><span class="pre">Tree.rebalance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.root"><code class="docutils literal notranslate"><span class="pre">Tree.root</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.rotate_left"><code class="docutils literal notranslate"><span class="pre">Tree.rotate_left()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.rotate_right"><code class="docutils literal notranslate"><span class="pre">Tree.rotate_right()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.search"><code class="docutils literal notranslate"><span class="pre">Tree.search()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tree.Tree.search_closer"><code class="docutils literal notranslate"><span class="pre">Tree.search_closer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tree.draw_tree"><code class="docutils literal notranslate"><span class="pre">draw_tree()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="res.html">res module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Canaguay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">canaguay</a></li>
+      <li class="breadcrumb-item active">tree module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tree.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-tree">
+<span id="tree-module"></span><h1>tree module<a class="headerlink" href="#module-tree" title="Link to this heading"></a></h1>
+<p>Module for defining a balanced binary search tree with visualization capabilities</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tree.Node">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tree.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tree.html#Node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Node" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Node of a Binary Search Tree</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Node.balance_factor">
+<span class="sig-name descname"><span class="pre">balance_factor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/tree.html#Node.balance_factor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Node.balance_factor" title="Link to this definition"></a></dt>
+<dd><p>Returns the balance factor of the node</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Node.detach_from_parent">
+<span class="sig-name descname"><span class="pre">detach_from_parent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tree.html#Node.detach_from_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Node.detach_from_parent" title="Link to this definition"></a></dt>
+<dd><p>Detach this node from its parent</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Node.has_childs">
+<span class="sig-name descname"><span class="pre">has_childs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/tree.html#Node.has_childs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Node.has_childs" title="Link to this definition"></a></dt>
+<dd><p>Returns True if has at least one child</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Node.has_full_capacity">
+<span class="sig-name descname"><span class="pre">has_full_capacity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/tree.html#Node.has_full_capacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Node.has_full_capacity" title="Link to this definition"></a></dt>
+<dd><p>Returns True if has both childs</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tree.Node.height">
+<span class="sig-name descname"><span class="pre">height</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#tree.Node.height" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tree.Node.left">
+<span class="sig-name descname"><span class="pre">left</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#tree.Node.left" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Node.next">
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tree.html#Node.next"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Node.next" title="Link to this definition"></a></dt>
+<dd><p>Returns the next node in in-order traversal</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tree.Node.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#tree.Node.parent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Node.prev">
+<span class="sig-name descname"><span class="pre">prev</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tree.html#Node.prev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Node.prev" title="Link to this definition"></a></dt>
+<dd><p>Returns the previous node in in-order traversal</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tree.Node.right">
+<span class="sig-name descname"><span class="pre">right</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#tree.Node.right" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Node.update_height">
+<span class="sig-name descname"><span class="pre">update_height</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tree.html#Node.update_height"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Node.update_height" title="Link to this definition"></a></dt>
+<dd><p>Updates the height of the node</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tree.Node.value">
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#tree.Node.value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tree.Tree">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tree.</span></span><span class="sig-name descname"><span class="pre">Tree</span></span><a class="reference internal" href="_modules/tree.html#Tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Binary Search Tree</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.BREADTH_list">
+<span class="sig-name descname"><span class="pre">BREADTH_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/tree.html#Tree.BREADTH_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.BREADTH_list" title="Link to this definition"></a></dt>
+<dd><p>Returns the breadth-first traversal of the tree as a list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.ILR_list">
+<span class="sig-name descname"><span class="pre">ILR_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/tree.html#Tree.ILR_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.ILR_list" title="Link to this definition"></a></dt>
+<dd><p>Returns the pre-order traversal of the tree as a list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.LIR_list">
+<span class="sig-name descname"><span class="pre">LIR_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/tree.html#Tree.LIR_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.LIR_list" title="Link to this definition"></a></dt>
+<dd><p>Returns the in-order traversal of the tree as a list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.LRI_list">
+<span class="sig-name descname"><span class="pre">LRI_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/tree.html#Tree.LRI_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.LRI_list" title="Link to this definition"></a></dt>
+<dd><p>Returns the post-order traversal of the tree as a list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tree.html#Tree.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.add" title="Link to this definition"></a></dt>
+<dd><p>Add only if not exists
+Args:</p>
+<blockquote>
+<div><p><a href="#id1"><span class="problematic" id="id2">*</span></a>args (Any): The items to add</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tree.html#Tree.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.clear" title="Link to this definition"></a></dt>
+<dd><p>Clear the tree</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.contains">
+<span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/tree.html#Tree.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.contains" title="Link to this definition"></a></dt>
+<dd><p>Check if the tree contains the item
+Args:</p>
+<blockquote>
+<div><p>item (Any): The item to check for</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>bool: True if the item is in the tree, False otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.delete">
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tree.html#Tree.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.delete" title="Link to this definition"></a></dt>
+<dd><p>Delete items if they exist
+Args:</p>
+<blockquote>
+<div><p><a href="#id3"><span class="problematic" id="id4">*</span></a>args (Any): The items to delete</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.rebalance">
+<span class="sig-name descname"><span class="pre">rebalance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tree.html#Tree.rebalance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.rebalance" title="Link to this definition"></a></dt>
+<dd><p>Rebalances the tree from the given node upwards
+Args:</p>
+<blockquote>
+<div><p>node (Node): The node to start rebalancing from</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tree.Tree.root">
+<span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#tree.Tree.root" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.rotate_left">
+<span class="sig-name descname"><span class="pre">rotate_left</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tree.html#Tree.rotate_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.rotate_left" title="Link to this definition"></a></dt>
+<dd><p>Rotates the node to the left and returns the new root of the subtree
+Args:</p>
+<blockquote>
+<div><p>node (Node): The node to rotate</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Optional[Node]: The new root of the subtree or None if rotation is not possible</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.rotate_right">
+<span class="sig-name descname"><span class="pre">rotate_right</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tree.html#Tree.rotate_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.rotate_right" title="Link to this definition"></a></dt>
+<dd><p>Rotates the node to the right and returns the new root of the subtree
+Args:</p>
+<blockquote>
+<div><p>node (Node): The node to rotate</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Optional[Node]: The new root of the subtree or None if rotation is not possible</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tree.html#Tree.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.search" title="Link to this definition"></a></dt>
+<dd><p>Search and return None if not found
+Args:</p>
+<blockquote>
+<div><p>item (Any): The item to search for</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Optional[Node]: The found node or None if not found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tree.Tree.search_closer">
+<span class="sig-name descname"><span class="pre">search_closer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmp_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tree.html#Tree.search_closer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.Tree.search_closer" title="Link to this definition"></a></dt>
+<dd><p>Search but return allways
+- returns (Node, True) if found
+- returns (Node, False) if not found, Node is the parent where it could be added
+- returns (None, False) if tree is empty</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>item (Any): The item to search for
+cmp_func (callable, optional): A comparison function that takes an item and returns: If None, the default comparison operators will be used.</p>
+</dd>
+<dt>Returns:</dt><dd><p>(Optional[Node], bool): A tuple containing the found node (or parent)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tree.draw_tree">
+<span class="sig-prename descclassname"><span class="pre">tree.</span></span><span class="sig-name descname"><span class="pre">draw_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tree.Tree" title="tree.Tree"><span class="pre">Tree</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tree.html#draw_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tree.draw_tree" title="Link to this definition"></a></dt>
+<dd><p>Draws the tree with its traversals using matplotlib
+Args:</p>
+<blockquote>
+<div><p>tree (Tree): The tree to draw
+min_value (Any, optional): A minimum value to highlight
+max_value (Any, optional): A maximum value to highlight</p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="road.html" class="btn btn-neutral float-left" title="road module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="res.html" class="btn btn-neutral float-right" title="res module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alex Granada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

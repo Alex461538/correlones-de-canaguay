@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>game &mdash; Canaguay 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Canaguay
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">canaguay</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Canaguay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">game</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for game</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Main game logic module &quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pygame</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tree</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">res</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">road</span><span class="w"> </span><span class="kn">import</span> <span class="n">Road</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">player</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">point</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">obstacle</span><span class="w"> </span><span class="kn">import</span> <span class="n">obstacle_from_index</span><span class="p">,</span> <span class="n">obstacle_texture_from_index</span><span class="p">,</span> <span class="n">get_obstacle_types_count</span><span class="p">,</span> <span class="n">obstacle_damage_from_index</span>
+
+<div class="viewcode-block" id="State">
+<a class="viewcode-back" href="../game.html#game.State">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Describes the current state of the game &quot;&quot;&quot;</span>
+    <span class="n">EDITING</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">PLAYING</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">WINNER</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">GAMEOVER</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+
+<span class="n">game_state</span><span class="p">:</span> <span class="n">State</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">EDITING</span>
+
+<span class="n">player_velocity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">editing_scroll_velocity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">framerate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">dialog_timer</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">screen_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">screen_height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">placeholder_texture_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">player_sprite</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<span class="n">tree</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">Tree</span><span class="p">()</span>
+
+<span class="n">focused_obj</span><span class="p">:</span> <span class="n">Point</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">road</span><span class="p">:</span> <span class="n">Road</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">player</span><span class="p">:</span> <span class="n">Player</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">rendering_obstacle_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># ------------------------------------------------</span>
+<span class="c1"># State change funcs</span>
+<span class="c1"># ------------------------------------------------</span>
+
+<div class="viewcode-block" id="goto_edit">
+<a class="viewcode-back" href="../game.html#game.goto_edit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">goto_edit</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Change game to edit mode &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">game_state</span><span class="p">,</span> <span class="n">dialog_timer</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="n">road</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">dialog_timer</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">game_state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">EDITING</span></div>
+
+
+<div class="viewcode-block" id="goto_play">
+<a class="viewcode-back" href="../game.html#game.goto_play">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">goto_play</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Change game to play mode &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">game_state</span><span class="p">,</span> <span class="n">dialog_timer</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">HP</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">max_HP</span>
+    <span class="n">road</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>
+    <span class="n">dialog_timer</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">game_state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">PLAYING</span></div>
+
+
+<div class="viewcode-block" id="goto_win">
+<a class="viewcode-back" href="../game.html#game.goto_win">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">goto_win</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Change game to win screen &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">game_state</span><span class="p">,</span> <span class="n">dialog_timer</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="n">dialog_timer</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">game_state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">WINNER</span></div>
+
+
+<div class="viewcode-block" id="goto_to_the_graveyard">
+<a class="viewcode-back" href="../game.html#game.goto_to_the_graveyard">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">goto_to_the_graveyard</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Change game to death screen &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">game_state</span><span class="p">,</span> <span class="n">dialog_timer</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="n">dialog_timer</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">game_state</span> <span class="o">=</span> <span class="n">State</span><span class="o">.</span><span class="n">GAMEOVER</span></div>
+
+
+<span class="c1"># ------------------------------------------------</span>
+<span class="c1"># Init funcs</span>
+<span class="c1"># ------------------------------------------------</span>
+
+<div class="viewcode-block" id="init">
+<a class="viewcode-back" href="../game.html#game.init">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">SCREEN_WIDTH</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">SCREEN_HEIGHT</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Initialize the game&#39;s general variables </span>
+<span class="sd">    Args:</span>
+<span class="sd">        SCREEN_WIDTH (int): The width of the game window</span>
+<span class="sd">        SCREEN_HEIGHT (int): The height of the game window</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">road</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">screen_width</span><span class="p">,</span> <span class="n">screen_height</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="n">road</span> <span class="o">=</span> <span class="n">Road</span><span class="p">(</span><span class="n">screen_width</span><span class="o">=</span><span class="n">SCREEN_WIDTH</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">road</span><span class="o">=</span><span class="n">road</span><span class="p">)</span>
+    <span class="n">road</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">SCREEN_HEIGHT</span> <span class="o">-</span> <span class="n">road</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">screen_width</span> <span class="o">=</span> <span class="n">SCREEN_WIDTH</span>
+    <span class="n">screen_height</span> <span class="o">=</span> <span class="n">SCREEN_HEIGHT</span>
+    <span class="n">load_json</span><span class="p">()</span></div>
+
+
+<span class="c1"># ------------------------------------------------</span>
+<span class="c1"># Main loop funcs</span>
+<span class="c1"># ------------------------------------------------</span>
+
+<div class="viewcode-block" id="event_update">
+<a class="viewcode-back" href="../game.html#game.event_update">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">event_update</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Updates the game&#39;s logic for pygame events </span>
+<span class="sd">    Args:</span>
+<span class="sd">        event (pygame.event.Event): The event to process</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">placeholder_texture_index</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">EDITING</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEWHEEL</span><span class="p">:</span>
+            <span class="n">placeholder_texture_index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">placeholder_texture_index</span> <span class="o">%=</span> <span class="n">get_obstacle_types_count</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">KEYDOWN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_e</span><span class="p">:</span>
+                <span class="n">goto_play</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONDOWN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">focused_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">())</span>
+                <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">road</span><span class="o">.</span><span class="n">offset</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">obstacle_from_index</span><span class="p">(</span><span class="n">placeholder_texture_index</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">tree</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">as_point</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">placeholder_texture_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">placeholder_texture_index</span> <span class="o">%=</span> <span class="n">get_obstacle_types_count</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">focused_obj</span><span class="p">:</span>
+                    <span class="n">tree</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">focused_obj</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">PLAYING</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">KEYDOWN</span><span class="p">:</span>
+            <span class="c1"># Check for specific key presses</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_UP</span><span class="p">:</span>
+                <span class="n">player</span><span class="o">.</span><span class="n">lane_up</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_DOWN</span><span class="p">:</span>
+                <span class="n">player</span><span class="o">.</span><span class="n">lane_down</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_SPACE</span> <span class="ow">or</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_c</span> <span class="ow">or</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_x</span><span class="p">:</span>
+                <span class="n">player</span><span class="o">.</span><span class="n">jump</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">K_e</span><span class="p">:</span>
+                <span class="n">goto_edit</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">WINNER</span> <span class="ow">or</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">GAMEOVER</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONDOWN</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">goto_edit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_visible_obstacle_limits">
+<a class="viewcode-back" href="../game.html#game.get_visible_obstacle_limits">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_visible_obstacle_limits</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Get the visible obstacles edge nodes </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        (Point, Point): The low and high limit point associated nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">y</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    
+    <span class="n">low_limit</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">search_closer</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">compare</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">right</span> <span class="o">-</span> <span class="n">road</span><span class="o">.</span><span class="n">offset</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">high_limit</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">search_closer</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">obj</span><span class="p">:</span> <span class="n">compare</span><span class="p">(</span><span class="n">screen_width</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">road</span><span class="o">.</span><span class="n">offset</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">low_limit</span><span class="p">,</span> <span class="n">high_limit</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_visible_obstacles">
+<a class="viewcode-back" href="../game.html#game.load_visible_obstacles">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_visible_obstacles</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Loads the visible obstacles into the rendering list &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">rendering_obstacle_list</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="n">low_limit</span><span class="p">,</span> <span class="n">high_limit</span> <span class="o">=</span> <span class="n">get_visible_obstacle_limits</span><span class="p">()</span>
+    <span class="n">rendering_obstacle_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># print(low_limit.value, high_limit.value)</span>
+    <span class="k">while</span> <span class="n">low_limit</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rendering_obstacle_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">low_limit</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">low_limit</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">high_limit</span><span class="o">.</span><span class="n">value</span> <span class="ow">or</span> <span class="n">low_limit</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="n">high_limit</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">low_limit</span> <span class="o">=</span> <span class="n">low_limit</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="update">
+<a class="viewcode-back" href="../game.html#game.update">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Updates the main game&#39;s logic &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">rendering_obstacle_list</span><span class="p">,</span> <span class="n">editing_scroll_velocity</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="n">load_visible_obstacles</span><span class="p">()</span>
+
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">get_pressed</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">EDITING</span><span class="p">:</span>
+        <span class="n">sub_vel</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">keys</span><span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">K_LEFT</span><span class="p">]</span> <span class="ow">and</span> <span class="n">road</span><span class="o">.</span><span class="n">offset</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">sub_vel</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span>
+        <span class="k">if</span> <span class="n">keys</span><span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">K_RIGHT</span><span class="p">]</span> <span class="ow">and</span> <span class="n">road</span><span class="o">.</span><span class="n">offset</span> <span class="o">&lt;</span> <span class="n">road</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span> <span class="o">-</span> <span class="n">screen_width</span><span class="p">:</span>
+            <span class="n">sub_vel</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">editing_scroll_velocity</span> <span class="o">=</span> <span class="p">(</span><span class="n">editing_scroll_velocity</span> <span class="o">+</span> <span class="n">player_velocity</span> <span class="o">*</span> <span class="n">sub_vel</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">road</span><span class="o">.</span><span class="n">offset</span> <span class="o">+=</span> <span class="n">editing_scroll_velocity</span>
+    <span class="n">road</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">PLAYING</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">road</span><span class="o">.</span><span class="n">completeness</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">):</span>
+            <span class="n">goto_win</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">player</span><span class="o">.</span><span class="n">HP</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">goto_to_the_graveyard</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">player</span><span class="o">.</span><span class="n">jumping</span><span class="p">:</span>
+                <span class="k">for</span> <span class="nb">object</span> <span class="ow">in</span> <span class="n">rendering_obstacle_list</span><span class="p">:</span>
+                    <span class="n">object_rect</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">rect</span>
+                    <span class="n">padding</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">hitbox_padding</span>
+                    <span class="n">rect</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">object_rect</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">road</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">object_rect</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">padding</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">object_rect</span><span class="o">.</span><span class="n">w</span> <span class="o">-</span> <span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">padding</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">object_rect</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="n">padding</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">padding</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">point_inside_rect</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">centerx</span><span class="p">,</span> <span class="n">player</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">bottom</span> <span class="o">-</span> <span class="mi">4</span><span class="p">,</span> <span class="n">rect</span><span class="p">):</span>
+                        <span class="n">player</span><span class="o">.</span><span class="n">damage</span><span class="p">(</span><span class="n">obstacle_damage_from_index</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">type</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="post_update">
+<a class="viewcode-back" href="../game.html#game.post_update">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">post_update</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Update the game&#39;s logic for the frme end &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">dialog_timer</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">PLAYING</span><span class="p">:</span>
+        <span class="n">road</span><span class="o">.</span><span class="n">offset</span> <span class="o">+=</span> <span class="n">player_velocity</span>
+    <span class="k">elif</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">WINNER</span> <span class="ow">or</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">GAMEOVER</span><span class="p">:</span>
+        <span class="n">dialog_timer</span> <span class="o">+=</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="draw">
+<a class="viewcode-back" href="../game.html#game.draw">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="n">surface</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Draws the game content to a surface &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">focused_obj</span><span class="p">,</span> <span class="n">rendering_obstacle_list</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">BG</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">24</span><span class="p">))</span>
+    <span class="n">road</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">EDITING</span> <span class="ow">and</span> <span class="n">focused_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">obstacle_texture_from_index</span><span class="p">(</span><span class="n">placeholder_texture_index</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">())</span>
+
+    <span class="n">focused_obj</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="nb">object</span> <span class="ow">in</span> <span class="n">rendering_obstacle_list</span><span class="p">:</span>
+        <span class="n">rect</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">road</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="nb">object</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="nb">object</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="nb">object</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">EDITING</span> <span class="ow">and</span> <span class="n">point_inside_rect</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rect</span><span class="p">):</span>
+            <span class="n">focused_obj</span> <span class="o">=</span> <span class="nb">object</span>
+            <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">rect</span><span class="p">)</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">rect</span><span class="p">)</span>
+    
+    <span class="n">player</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+    <span class="n">road_below_y</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HP </span><span class="si">{</span><span class="n">player</span><span class="o">.</span><span class="n">HP</span><span class="si">}</span><span class="s2"> &lt;</span><span class="si">{</span><span class="n">road</span><span class="o">.</span><span class="n">completeness</span><span class="si">}</span><span class="s2">x&gt;&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">road_below_y</span><span class="p">))</span>
+    <span class="n">dialog_aperture</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="n">dialog_timer</span><span class="p">)</span>
+    <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">screen_height</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">dialog_aperture</span><span class="p">,</span> <span class="n">screen_width</span><span class="p">,</span> <span class="n">dialog_aperture</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">dialog_aperture</span> <span class="o">==</span> <span class="mi">24</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">WINNER</span><span class="p">:</span>
+            <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">WIN</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">screen_height</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">12</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">GAMEOVER</span><span class="p">:</span>
+            <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">LOSE</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">screen_height</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">12</span><span class="p">))</span>
+    
+    <span class="n">road_below_y</span> <span class="o">=</span> <span class="n">road</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">bottom</span>
+    <span class="k">if</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">EDITING</span><span class="p">:</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L/R: Scroll&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wheel: Change&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span> <span class="o">+</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LMB: Place&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span> <span class="o">+</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RMB: Delete&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span> <span class="o">+</span> <span class="mi">30</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MMB: Change&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span> <span class="o">+</span> <span class="mi">40</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E: Switch to play&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span> <span class="o">+</span> <span class="mi">50</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;V: See avl&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span> <span class="o">+</span> <span class="mi">60</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">game_state</span> <span class="o">==</span> <span class="n">State</span><span class="o">.</span><span class="n">PLAYING</span><span class="p">:</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;E: Switch to edit&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Space/C/X: Jump&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span> <span class="o">+</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Up/Down: Dodge&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span> <span class="o">+</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">Font</span><span class="o">.</span><span class="n">NJ</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;V: See avl&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mi">143</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">51</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">road_below_y</span> <span class="o">+</span> <span class="mi">30</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># ------------------------------------------------</span>
+<span class="c1"># Save/Load funcs</span>
+<span class="c1"># ------------------------------------------------</span>
+
+<div class="viewcode-block" id="load_json">
+<a class="viewcode-back" href="../game.html#game.load_json">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_json</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Load configurable data from disk &quot;&quot;&quot;</span>
+    <span class="c1"># load atomic properties</span>
+    <span class="k">global</span> <span class="n">player_velocity</span><span class="p">,</span> <span class="n">framerate</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">player_sprite</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">obstacle_damage</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;data.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">loaded_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">road</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">loaded_data</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;road_length&quot;</span><span class="p">]</span>
+        <span class="n">player_velocity</span> <span class="o">=</span> <span class="n">loaded_data</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;player_velocity&quot;</span><span class="p">]</span>
+        <span class="n">framerate</span> <span class="o">=</span> <span class="n">loaded_data</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;framerate&quot;</span><span class="p">]</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">jump_distance</span> <span class="o">=</span> <span class="n">loaded_data</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;jump_distance&quot;</span><span class="p">]</span>
+        <span class="n">player_sprite</span> <span class="o">=</span> <span class="n">loaded_data</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;player_sprite&quot;</span><span class="p">]</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span> <span class="n">player_sprite</span> <span class="p">)</span><span class="o">.</span><span class="n">convert_alpha</span><span class="p">()</span>
+        <span class="c1"># load obstacles</span>
+        <span class="n">tree</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">loaded_data</span><span class="p">[</span><span class="s2">&quot;objects&quot;</span><span class="p">]:</span>
+            <span class="n">obstacle</span> <span class="o">=</span> <span class="n">obstacle_from_index</span><span class="p">(</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">obs</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">obs</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">])</span>
+            <span class="n">tree</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obstacle</span><span class="o">.</span><span class="n">as_point</span><span class="p">())</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="save_json">
+<a class="viewcode-back" href="../game.html#game.save_json">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_json</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Save configurable data to disk &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">player_velocity</span><span class="p">,</span> <span class="n">framerate</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">player_sprite</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">obstacle_damage</span>
+    <span class="c1"># --- Global decl end ---</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;data.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span>
+            <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;road_length&quot;</span><span class="p">:</span> <span class="n">road</span><span class="o">.</span><span class="n">length</span><span class="p">,</span>
+                <span class="s2">&quot;player_velocity&quot;</span><span class="p">:</span> <span class="n">player_velocity</span><span class="p">,</span>
+                <span class="s2">&quot;framerate&quot;</span><span class="p">:</span> <span class="n">framerate</span><span class="p">,</span>
+                <span class="s2">&quot;jump_distance&quot;</span><span class="p">:</span> <span class="n">player</span><span class="o">.</span><span class="n">jump_distance</span><span class="p">,</span>
+                <span class="s2">&quot;player_sprite&quot;</span><span class="p">:</span> <span class="n">player_sprite</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;objects&quot;</span><span class="p">:</span> <span class="p">[{</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">obstacle</span><span class="o">.</span><span class="n">type</span> <span class="p">}</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">LIR_list</span><span class="p">()]</span>
+        <span class="p">},</span> <span class="n">file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+
+<span class="c1"># ------------------------------------------------</span>
+<span class="c1"># Misc</span>
+<span class="c1"># ------------------------------------------------</span>
+
+<div class="viewcode-block" id="point_inside_rect">
+<a class="viewcode-back" href="../game.html#game.point_inside_rect">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">point_inside_rect</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rect</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Checks if a point (x, y) is inside a pygame rect</span>
+<span class="sd">    Args:</span>
+<span class="sd">        x (int): The x coordinate of the point</span>
+<span class="sd">        y (int): The y coordinate of the point</span>
+<span class="sd">        rect (pygame.Rect): The rectangle to check against</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if the point is inside the rectangle, False otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">rect</span><span class="o">.</span><span class="n">x</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">rect</span><span class="o">.</span><span class="n">right</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">rect</span><span class="o">.</span><span class="n">bottom</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alex Granada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

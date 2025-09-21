@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>game module &mdash; Canaguay 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="main module" href="main.html" />
+    <link rel="prev" title="canaguay" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Canaguay
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">canaguay</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">game module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#game.State"><code class="docutils literal notranslate"><span class="pre">State</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#game.State.EDITING"><code class="docutils literal notranslate"><span class="pre">State.EDITING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#game.State.GAMEOVER"><code class="docutils literal notranslate"><span class="pre">State.GAMEOVER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#game.State.PLAYING"><code class="docutils literal notranslate"><span class="pre">State.PLAYING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#game.State.WINNER"><code class="docutils literal notranslate"><span class="pre">State.WINNER</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#game.draw"><code class="docutils literal notranslate"><span class="pre">draw()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.event_update"><code class="docutils literal notranslate"><span class="pre">event_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.get_visible_obstacle_limits"><code class="docutils literal notranslate"><span class="pre">get_visible_obstacle_limits()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.goto_edit"><code class="docutils literal notranslate"><span class="pre">goto_edit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.goto_play"><code class="docutils literal notranslate"><span class="pre">goto_play()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.goto_to_the_graveyard"><code class="docutils literal notranslate"><span class="pre">goto_to_the_graveyard()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.goto_win"><code class="docutils literal notranslate"><span class="pre">goto_win()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.init"><code class="docutils literal notranslate"><span class="pre">init()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.load_json"><code class="docutils literal notranslate"><span class="pre">load_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.load_visible_obstacles"><code class="docutils literal notranslate"><span class="pre">load_visible_obstacles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.point_inside_rect"><code class="docutils literal notranslate"><span class="pre">point_inside_rect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.post_update"><code class="docutils literal notranslate"><span class="pre">post_update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.save_json"><code class="docutils literal notranslate"><span class="pre">save_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.update"><code class="docutils literal notranslate"><span class="pre">update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obstacle.html">obstacle module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player.html">player module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="point.html">point module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="road.html">road module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tree.html">tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="res.html">res module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Canaguay</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">canaguay</a></li>
+      <li class="breadcrumb-item active">game module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/game.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-game">
+<span id="game-module"></span><h1>game module<a class="headerlink" href="#module-game" title="Link to this heading"></a></h1>
+<p>Main game logic module</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="game.State">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">State</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#State"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.State" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Describes the current state of the game</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.State.EDITING">
+<span class="sig-name descname"><span class="pre">EDITING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#game.State.EDITING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.State.GAMEOVER">
+<span class="sig-name descname"><span class="pre">GAMEOVER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#game.State.GAMEOVER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.State.PLAYING">
+<span class="sig-name descname"><span class="pre">PLAYING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#game.State.PLAYING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.State.WINNER">
+<span class="sig-name descname"><span class="pre">WINNER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#game.State.WINNER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.draw">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pygame.Surface</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.draw" title="Link to this definition"></a></dt>
+<dd><p>Draws the game content to a surface</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.event_update">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">event_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pygame.event.Event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#event_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.event_update" title="Link to this definition"></a></dt>
+<dd><p>Updates the game’s logic for pygame events 
+Args:</p>
+<blockquote>
+<div><p>event (pygame.event.Event): The event to process</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.get_visible_obstacle_limits">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">get_visible_obstacle_limits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="tree.html#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="tree.html#tree.Node" title="tree.Node"><span class="pre">Node</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/game.html#get_visible_obstacle_limits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.get_visible_obstacle_limits" title="Link to this definition"></a></dt>
+<dd><p>Get the visible obstacles edge nodes 
+Returns:</p>
+<blockquote>
+<div><p>(Point, Point): The low and high limit point associated nodes</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.goto_edit">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">goto_edit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#goto_edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.goto_edit" title="Link to this definition"></a></dt>
+<dd><p>Change game to edit mode</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.goto_play">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">goto_play</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#goto_play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.goto_play" title="Link to this definition"></a></dt>
+<dd><p>Change game to play mode</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.goto_to_the_graveyard">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">goto_to_the_graveyard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#goto_to_the_graveyard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.goto_to_the_graveyard" title="Link to this definition"></a></dt>
+<dd><p>Change game to death screen</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.goto_win">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">goto_win</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#goto_win"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.goto_win" title="Link to this definition"></a></dt>
+<dd><p>Change game to win screen</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.init">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">SCREEN_WIDTH</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SCREEN_HEIGHT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.init" title="Link to this definition"></a></dt>
+<dd><p>Initialize the game’s general variables 
+Args:</p>
+<blockquote>
+<div><p>SCREEN_WIDTH (int): The width of the game window
+SCREEN_HEIGHT (int): The height of the game window</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.load_json">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">load_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#load_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.load_json" title="Link to this definition"></a></dt>
+<dd><p>Load configurable data from disk</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.load_visible_obstacles">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">load_visible_obstacles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#load_visible_obstacles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.load_visible_obstacles" title="Link to this definition"></a></dt>
+<dd><p>Loads the visible obstacles into the rendering list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.point_inside_rect">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">point_inside_rect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rect</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pygame.Rect</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/game.html#point_inside_rect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.point_inside_rect" title="Link to this definition"></a></dt>
+<dd><p>Checks if a point (x, y) is inside a pygame rect
+Args:</p>
+<blockquote>
+<div><p>x (int): The x coordinate of the point
+y (int): The y coordinate of the point
+rect (pygame.Rect): The rectangle to check against</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>bool: True if the point is inside the rectangle, False otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.post_update">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">post_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#post_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.post_update" title="Link to this definition"></a></dt>
+<dd><p>Update the game’s logic for the frme end</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.save_json">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">save_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#save_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.save_json" title="Link to this definition"></a></dt>
+<dd><p>Save configurable data to disk</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.update">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.update" title="Link to this definition"></a></dt>
+<dd><p>Updates the main game’s logic</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="canaguay" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="main.html" class="btn btn-neutral float-right" title="main module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Alex Granada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
