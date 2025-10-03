@@ -278,7 +278,9 @@ class Tree:
             if (node == self.root):
                 self.root = None
             else:
+                target = node.parent
                 node.detach_from_parent()
+                self.rebalance(target)
         # pass the headache to someone else
         elif node.has_full_capacity():
             ino = node.next()
@@ -297,6 +299,7 @@ class Tree:
                 node.right.parent = node
             if node.left:
                 node.left.parent = node
+            self.rebalance(node)
     
     def delete(self, *args):
         """
